@@ -13,7 +13,7 @@
         .header h1 { font-size:20px; color:white; }
         .header .status { font-size:12px; color:rgba(255,255,255,0.8); }
 
-        .container { max-width:1500px; margin:0 auto; padding:20px; display:grid; grid-template-columns:350px 1fr 280px; gap:20px; min-height:calc(100vh - 54px); }
+        .container { max-width:1500px; margin:0 auto; padding:20px; display:grid; grid-template-columns:300px 1fr 300px; gap:20px; min-height:calc(100vh - 54px); }
         .panel { background:var(--surface); border-radius:12px; padding:18px; border:1px solid var(--border); }
         .panel h2 { font-size:14px; color:var(--accent); margin-bottom:14px; padding-bottom:8px; border-bottom:1px solid var(--border); }
 
@@ -29,9 +29,10 @@
         .btn-primary:disabled { opacity:0.5; cursor:not-allowed; transform:none; }
         .btn-generate { background:linear-gradient(135deg,#25f4ee,#00c9b7); color:#0f0f0f; margin-top:10px; }
 
-        /* 장면 편집 */
         .scenes-panel { overflow-y:auto; max-height:calc(100vh - 100px); }
-        .scene-card { background:#222; border-radius:10px; padding:12px; margin-bottom:10px; border:1px solid #333; }
+        .scene-card { background:#222; border-radius:10px; padding:12px; margin-bottom:10px; border:2px solid #333; cursor:pointer; transition:border-color .15s; }
+        .scene-card:hover { border-color:#555; }
+        .scene-card.active { border-color:var(--accent); }
         .scene-header { display:flex; align-items:center; gap:6px; margin-bottom:8px; }
         .scene-badge { font-size:10px; padding:2px 8px; border-radius:10px; font-weight:bold; }
         .badge-thumbnail { background:#ff9800; color:#000; }
@@ -40,18 +41,18 @@
         .scene-name { font-size:11px; color:var(--muted); flex:1; }
         .scene-info { font-size:10px; color:#666; }
 
-        /* 줄 편집 */
-        .line-item { background:#1a1a1a; border:1px solid #333; border-radius:8px; padding:8px; margin-bottom:6px; }
-        .line-top { display:flex; align-items:center; gap:5px; margin-bottom:4px; }
-        .line-num { font-size:10px; color:#555; width:18px; text-align:right; flex-shrink:0; }
+        .line-item { background:#1a1a1a; border:1px solid #333; border-radius:8px; padding:8px; margin-bottom:6px; transition:border-color .15s; }
+        .line-item:hover { border-color:#555; }
+        .line-item.selected { border-color:var(--cyan); }
+        .line-top { display:flex; align-items:center; gap:4px; }
+        .line-num { font-size:10px; color:#555; width:16px; text-align:right; flex-shrink:0; }
         .line-input { flex:1; background:#252525; border:1px solid #333; border-radius:5px; padding:6px 8px; color:var(--text); font-size:12px; font-family:inherit; }
         .line-input:focus { outline:none; border-color:var(--accent); }
-        .line-actions { display:flex; gap:3px; }
-        .line-btn { background:none; border:1px solid #444; color:#888; cursor:pointer; border-radius:4px; width:24px; height:24px; font-size:11px; display:flex; align-items:center; justify-content:center; }
+        .line-actions { display:flex; gap:2px; }
+        .line-btn { background:none; border:1px solid #444; color:#888; cursor:pointer; border-radius:4px; width:22px; height:22px; font-size:10px; display:flex; align-items:center; justify-content:center; }
         .line-btn:hover { border-color:var(--accent); color:var(--accent); }
         .line-btn.active { background:var(--accent); border-color:var(--accent); color:white; }
 
-        /* 스타일 패널 */
         .style-panel { display:none; background:#151515; border-radius:6px; padding:8px; margin-top:4px; }
         .style-panel.show { display:block; }
         .style-row { display:flex; align-items:center; gap:6px; margin-bottom:6px; }
@@ -60,36 +61,37 @@
         .style-range { flex:1; accent-color:var(--accent); height:16px; }
         .style-val { font-size:10px; color:var(--muted); min-width:22px; text-align:right; }
 
-        /* 색상 */
         .color-row { display:flex; gap:4px; align-items:center; flex:1; }
-        .color-dot { width:20px; height:20px; border-radius:50%; cursor:pointer; border:2px solid transparent; transition:border-color 0.15s; }
+        .color-dot { width:18px; height:18px; border-radius:50%; cursor:pointer; border:2px solid transparent; transition:border-color 0.15s; }
         .color-dot:hover { border-color:#888; }
         .color-dot.sel { border-color:white; }
-        .color-picker { width:20px; height:20px; border-radius:50%; border:2px solid #444; cursor:pointer; padding:0; }
+        .color-picker { width:18px; height:18px; border-radius:50%; border:2px solid #444; cursor:pointer; padding:0; }
 
-        /* 줄 이미지 */
         .line-image-slot { margin-top:4px; border:1px dashed #444; border-radius:6px; padding:6px; text-align:center; cursor:pointer; font-size:10px; color:#555; position:relative; }
         .line-image-slot:hover { border-color:var(--accent); }
         .line-image-slot.has-img { border-style:solid; border-color:var(--cyan); padding:4px; }
-        .line-image-slot img { max-width:100%; max-height:80px; border-radius:4px; }
+        .line-image-slot img { max-width:100%; max-height:60px; border-radius:4px; }
         .line-image-slot .rm { position:absolute; top:2px; right:2px; background:var(--accent); color:white; border:none; border-radius:50%; width:16px; height:16px; cursor:pointer; font-size:10px; }
 
         .add-line-btn { background:#252525; border:1px dashed #444; border-radius:6px; padding:5px; color:#666; cursor:pointer; font-size:11px; text-align:center; margin-top:4px; font-family:inherit; }
         .add-line-btn:hover { border-color:var(--accent); color:var(--accent); }
 
-        /* 썸네일 */
         .thumb-input { width:100%; background:#1a1a1a; border:1px solid #333; border-radius:5px; padding:7px 9px; color:var(--text); font-size:12px; font-family:inherit; }
         .thumb-input:focus { outline:none; border-color:#ff9800; }
-        .thumb-row { display:flex; gap:6px; margin-bottom:6px; }
-        .thumb-row > div { flex:1; }
-        .thumb-row label { font-size:10px; color:var(--muted); display:block; margin-bottom:3px; }
 
-        /* 미리보기 */
+        /* 미리보기 패널 */
         .preview-panel { position:sticky; top:20px; }
-        .phone-frame { background:#000; border-radius:18px; padding:5px; aspect-ratio:9/16; max-height:460px; overflow:hidden; margin-bottom:10px; }
-        .phone-screen { background:#f0f0f0; border-radius:14px; width:100%; height:100%; display:flex; align-items:center; justify-content:center; overflow:hidden; }
+        .phone-frame { background:#000; border-radius:18px; padding:5px; aspect-ratio:9/16; overflow:hidden; margin-bottom:10px; }
+        .phone-screen { background:#f0f0f0; border-radius:14px; width:100%; height:100%; position:relative; overflow:hidden; }
+        .phone-screen canvas { width:100%; height:100%; border-radius:14px; }
         .phone-screen video { width:100%; height:100%; object-fit:contain; border-radius:14px; }
-        .phone-screen .placeholder { color:#999; font-size:11px; text-align:center; padding:14px; }
+        .phone-screen .placeholder { color:#999; font-size:11px; text-align:center; padding:14px; position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); }
+
+        .preview-nav { display:flex; gap:6px; margin-bottom:8px; }
+        .preview-nav button { flex:1; padding:6px; background:#222; border:1px solid #333; color:var(--muted); border-radius:6px; cursor:pointer; font-size:11px; font-family:inherit; }
+        .preview-nav button:hover { border-color:var(--accent); color:var(--text); }
+        .preview-nav button.active { background:var(--accent); border-color:var(--accent); color:white; }
+        .preview-scene-label { font-size:11px; color:var(--muted); text-align:center; margin-bottom:6px; }
 
         .total-info { background:#222; border-radius:7px; padding:8px; font-size:11px; color:var(--muted); margin-bottom:10px; }
         .total-info span { color:var(--cyan); font-weight:bold; }
@@ -108,7 +110,7 @@
         .toast.show { transform:translateY(0); opacity:1; }
         .toast.error { background:var(--accent); color:white; }
 
-        @media(max-width:1200px) { .container { grid-template-columns:1fr; } .preview-panel { position:static; } .phone-frame { max-height:360px; margin:0 auto; max-width:210px; } }
+        @media(max-width:1200px) { .container { grid-template-columns:1fr; } .preview-panel { position:static; } .phone-frame { max-height:400px; margin:0 auto; max-width:230px; } }
     </style>
 </head>
 <body>
@@ -133,16 +135,21 @@
         </div>
 
         <div class="panel scenes-panel">
-            <h2>2. 장면 편집 (한 줄 = 1.1초)</h2>
+            <h2>2. 장면 편집 <span style="font-size:10px;color:var(--muted);font-weight:normal">(장면 클릭 = 미리보기)</span></h2>
             <div id="scenesContainer"><div style="text-align:center;color:#555;padding:40px 16px;font-size:12px;">주제를 입력하고 대본을 생성해주세요</div></div>
             <button class="btn btn-generate" id="btnGenVideo" style="display:none" onclick="generateVideo()">영상 생성</button>
             <div class="loading" id="videoLoading"><div class="spinner"></div><div style="font-size:12px;color:var(--muted)">영상 생성 중...</div></div>
         </div>
 
         <div class="panel preview-panel">
-            <h2>3. 결과</h2>
+            <h2>3. 미리보기</h2>
             <div class="total-info" id="totalInfo">총 <span id="totalLines">0</span>줄 / 예상 <span id="totalDuration">0</span>초</div>
-            <div class="phone-frame"><div class="phone-screen" id="previewScreen"><div class="placeholder">영상 생성 후<br>미리보기 표시</div></div></div>
+            <div class="preview-scene-label" id="previewLabel">장면을 선택하세요</div>
+            <div class="phone-frame"><div class="phone-screen" id="previewScreen"><canvas id="previewCanvas" width="720" height="1280"></canvas><div class="placeholder" id="previewPlaceholder">대본 생성 후<br>미리보기 표시</div></div></div>
+            <div class="preview-nav" id="previewNav" style="display:none">
+                <button onclick="previewPrevLine()">◀ 이전 줄</button>
+                <button onclick="previewNextLine()">다음 줄 ▶</button>
+            </div>
             <div id="resultArea" style="display:none"><div class="result-actions"><a class="btn-download" id="downloadLink" href="#" download>다운로드</a><button class="btn-reset" onclick="resetAll()">새로 만들기</button></div></div>
         </div>
     </div>
@@ -153,13 +160,15 @@
         let sessionId = Math.random().toString(36).substr(2,8);
         let currentScenes = [];
         let availableFonts = {};
+        let activeSceneIdx = -1;
+        let previewLineIdx = -1;
+        let loadedImages = {};
         const defaultColors = ['#1A1A1A','#000000','#FFFFFF','#fe2c55','#2196f3','#ff9800','#4CAF50'];
+        const CANVAS_W = 720, CANVAS_H = 1280;
 
-        // 폰트 목록 로드
         fetch('/api/fonts').then(r=>r.json()).then(d=>{ availableFonts=d; });
 
         function showToast(m,e=false){ const t=document.getElementById('toast'); t.textContent=m; t.className='toast show'+(e?' error':''); setTimeout(()=>t.className='toast',3000); }
-
         function esc(s){ return s.replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 
         function updateTotals(){
@@ -180,6 +189,165 @@
             return scene.lines_data;
         }
 
+        // ===== 미리보기 렌더링 =====
+        function renderPreview(){
+            const canvas = document.getElementById('previewCanvas');
+            const ctx = canvas.getContext('2d');
+            const ph = document.getElementById('previewPlaceholder');
+
+            // 영상 재생 중이면 미리보기 스킵
+            const existingVideo = document.getElementById('previewScreen').querySelector('video');
+            if(existingVideo) return;
+
+            if(activeSceneIdx < 0 || activeSceneIdx >= currentScenes.length){
+                ph.style.display = 'block';
+                canvas.style.display = 'none';
+                return;
+            }
+            ph.style.display = 'none';
+            canvas.style.display = 'block';
+            canvas.style.position = 'relative';
+            canvas.style.zIndex = '1';
+
+            const scene = currentScenes[activeSceneIdx];
+            ctx.fillStyle = '#F0F0F0';
+            ctx.fillRect(0, 0, CANVAS_W, CANVAS_H);
+
+            if(scene.type === 'thumbnail'){
+                // 썸네일 미리보기
+                ctx.fillStyle = '#1A1A1A';
+                ctx.fillRect(0, 0, CANVAS_W, CANVAS_H);
+                ctx.fillStyle = '#FFFFFF';
+                ctx.font = 'bold 38px "Malgun Gothic"';
+                ctx.textAlign = 'center';
+                const title = scene.title || '제목';
+                wrapText(ctx, title, CANVAS_W/2, CANVAS_H/2 - 20, CANVAS_W - 80, 56);
+                document.getElementById('previewLabel').textContent = '썸네일';
+                return;
+            }
+
+            const ld = scene.lines_data || [];
+            if(ld.length === 0) return;
+
+            const showUpTo = previewLineIdx >= 0 ? Math.min(previewLineIdx, ld.length-1) : ld.length-1;
+
+            // 장면 이미지
+            let textStartY = 60;
+            const sceneImgUrl = scene.image_url || null;
+            if(sceneImgUrl && loadedImages[sceneImgUrl]){
+                const img = loadedImages[sceneImgUrl];
+                const maxH = CANVAS_H * 0.35;
+                const scale = Math.min((CANVAS_W - 80) / img.width, maxH / img.height, 1);
+                const w = img.width * scale, h = img.height * scale;
+                ctx.drawImage(img, (CANVAS_W - w)/2, 30, w, h);
+                textStartY = 30 + h + 20;
+            }
+
+            let y = textStartY;
+
+            for(let i = 0; i <= showUpTo; i++){
+                const line = ld[i];
+                const st = line.style || {};
+                const fontSize = st.fontSize || 32;
+                const color = st.color || '#1A1A1A';
+                const align = st.align || 'center';
+                const bold = line.text && line.text.includes('**');
+
+                // 줄 이미지
+                if(line.image_url && loadedImages[line.image_url]){
+                    const img = loadedImages[line.image_url];
+                    const maxH = CANVAS_H * 0.22;
+                    const scale = Math.min((CANVAS_W - 100) / img.width, maxH / img.height, 1);
+                    const w = img.width * scale, h = img.height * scale;
+                    ctx.drawImage(img, (CANVAS_W - w)/2, y, w, h);
+                    y += h + 12;
+                    if(!line.text || !line.text.trim()) continue;
+                }
+
+                if(!line.text || !line.text.trim()) continue;
+
+                // 볼드 파싱 및 렌더링
+                const text = line.text.replace(/\*\*/g, '');
+                const fontStr = bold ? `bold ${Math.round(fontSize*1.1)}px "Malgun Gothic"` : `${fontSize}px "Malgun Gothic"`;
+                ctx.font = fontStr;
+                ctx.fillStyle = color;
+
+                const tw = ctx.measureText(text).width;
+                let x;
+                if(align === 'left') x = 50;
+                else if(align === 'right') x = CANVAS_W - tw - 50;
+                else x = (CANVAS_W - tw) / 2;
+
+                ctx.textAlign = 'left';
+                ctx.fillText(text, x, y + fontSize);
+                y += fontSize + 16;
+
+                // 현재 줄 하이라이트
+                if(i === showUpTo && previewLineIdx >= 0){
+                    ctx.strokeStyle = '#fe2c55';
+                    ctx.lineWidth = 2;
+                    ctx.strokeRect(x - 4, y - fontSize - 12, tw + 8, fontSize + 8);
+                }
+            }
+
+            const labels = {hooking:'훅킹+공감',story_emotion:'스토리(감정)',story_struggle:'스토리(좌절)',information:'원인/정보',solution:'솔루션',proof:'증거/후기',tips:'추가팁',closing:'마무리'};
+            const lbl = labels[scene.name] || scene.name || '';
+            document.getElementById('previewLabel').textContent = `${lbl} (${showUpTo+1}/${ld.length}줄)`;
+        }
+
+        function wrapText(ctx, text, x, y, maxW, lineH){
+            let words = text.split('');
+            let line = '';
+            let lines = [];
+            for(let ch of words){
+                let test = line + ch;
+                if(ctx.measureText(test).width > maxW && line){
+                    lines.push(line);
+                    line = ch;
+                } else { line = test; }
+            }
+            if(line) lines.push(line);
+            const startY = y - (lines.length - 1) * lineH / 2;
+            lines.forEach((l, i) => {
+                ctx.fillText(l, x, startY + i * lineH);
+            });
+        }
+
+        function selectScene(si){
+            activeSceneIdx = si;
+            const scene = currentScenes[si];
+            if(scene.type === 'thumbnail'){
+                previewLineIdx = -1;
+            } else {
+                const ld = scene.lines_data || [];
+                previewLineIdx = ld.length - 1;
+            }
+            document.getElementById('previewNav').style.display = (scene.type !== 'thumbnail' && (scene.lines_data||[]).length > 0) ? 'flex' : 'none';
+            renderScenes();
+            renderPreview();
+        }
+
+        function previewPrevLine(){
+            if(activeSceneIdx < 0) return;
+            if(previewLineIdx > 0) previewLineIdx--;
+            renderPreview();
+        }
+        function previewNextLine(){
+            if(activeSceneIdx < 0) return;
+            const ld = currentScenes[activeSceneIdx].lines_data || [];
+            if(previewLineIdx < ld.length - 1) previewLineIdx++;
+            renderPreview();
+        }
+
+        function preloadImage(url, callback){
+            if(loadedImages[url]){ if(callback) callback(); return; }
+            const img = new Image();
+            img.crossOrigin = 'anonymous';
+            img.onload = () => { loadedImages[url] = img; if(callback) callback(); };
+            img.src = url;
+        }
+
+        // ===== 장면 렌더링 =====
         async function generateScript(){
             const topic=document.getElementById('topic').value.trim();
             const desc=document.getElementById('description').value.trim();
@@ -193,7 +361,12 @@
                 if(data.error){ showToast(data.error,true); return; }
                 currentScenes=data.scenes;
                 currentScenes.forEach(s=>{ if(s.type!=='thumbnail') ensureLinesData(s); });
+                activeSceneIdx = currentScenes.length > 1 ? 1 : 0;
+                const scene = currentScenes[activeSceneIdx];
+                previewLineIdx = scene.type !== 'thumbnail' ? (scene.lines_data||[]).length - 1 : -1;
                 renderScenes();
+                renderPreview();
+                document.getElementById('previewNav').style.display = 'flex';
                 showToast('대본 생성 완료!');
                 document.getElementById('status').textContent='편집 중';
             }catch(e){ showToast('오류: '+e.message,true); }
@@ -212,9 +385,9 @@
             let h='';
             defaultColors.forEach(c=>{
                 const sel=c===currentColor?'sel':'';
-                h+=`<div class="color-dot ${sel}" style="background:${c}" onclick="setLineStyle(${si},${li},'color','${c}');renderScenes()"></div>`;
+                h+=`<div class="color-dot ${sel}" style="background:${c}" onclick="setLineStyle(${si},${li},'color','${c}');renderScenes();renderPreview()"></div>`;
             });
-            h+=`<input type="color" class="color-picker" value="${currentColor||'#1A1A1A'}" onchange="setLineStyle(${si},${li},'color',this.value);renderScenes()">`;
+            h+=`<input type="color" class="color-picker" value="${currentColor||'#1A1A1A'}" onchange="setLineStyle(${si},${li},'color',this.value);renderScenes();renderPreview()">`;
             return h;
         }
 
@@ -224,21 +397,32 @@
             ld.style[prop]= prop==='fontSize'?parseInt(val):val;
         }
 
+        function moveLine(si, li, dir){
+            const ld = currentScenes[si].lines_data;
+            const newIdx = li + dir;
+            if(newIdx < 0 || newIdx >= ld.length) return;
+            [ld[li], ld[newIdx]] = [ld[newIdx], ld[li]];
+            if(previewLineIdx === li) previewLineIdx = newIdx;
+            else if(previewLineIdx === newIdx) previewLineIdx = li;
+            renderScenes();
+            renderPreview();
+        }
+
         function renderScenes(){
             const c=document.getElementById('scenesContainer');
             c.innerHTML='';
-            const labels={hooking:'훅킹+공감',story:'스토리',information:'원인/정보',info:'원인/정보',solution:'솔루션',proof:'증거/후기',result:'증거/후기',evidence:'증거/후기',closing:'마무리',recommendation:'마무리'};
+            const labels={hooking:'훅킹+공감',story_emotion:'스토리(감정)',story_struggle:'스토리(좌절)',story:'스토리',information:'원인/정보',info:'원인/정보',solution:'솔루션',proof:'증거/후기',result:'증거/후기',evidence:'증거/후기',tips:'추가팁',closing:'마무리',recommendation:'마무리',list_items:'리스트'};
 
             currentScenes.forEach((scene,si)=>{
                 const card=document.createElement('div');
-                card.className='scene-card';
+                card.className='scene-card' + (si === activeSceneIdx ? ' active' : '');
+                card.onclick = (e) => { if(e.target.tagName==='INPUT'||e.target.tagName==='TEXTAREA'||e.target.tagName==='SELECT'||e.target.tagName==='BUTTON'||e.target.classList.contains('color-dot')||e.target.classList.contains('color-picker')) return; selectScene(si); };
                 let html='';
 
                 if(scene.type==='thumbnail'){
-                    html=`<div class="scene-header"><span class="scene-badge badge-thumbnail">썸네일</span><span class="scene-name">네이트판</span></div>
-                    <div class="thumb-row"><div style="flex:1"><label>게시글 제목</label><input class="thumb-input" value="${esc(scene.title||'')}" onchange="currentScenes[${si}].title=this.value"></div>
-                    <div style="width:60px"><label>번호</label><input class="thumb-input" value="${esc(scene.category||'19')}" onchange="currentScenes[${si}].category=this.value"></div></div>
-                    <div class="line-image-slot" id="tslot-${si}" onclick="document.getElementById('tfile-${si}').click()">+ 커스텀 썸네일 (선택)<input type="file" id="tfile-${si}" accept="image/*" onchange="uploadSceneImage(this,${si})" style="display:none"></div>`;
+                    html=`<div class="scene-header"><span class="scene-badge badge-thumbnail">썸네일</span><span class="scene-name">이미지 업로드</span></div>
+                    <div style="margin-bottom:6px"><label style="font-size:10px;color:var(--muted);display:block;margin-bottom:3px">제목</label><input class="thumb-input" value="${esc(scene.title||'')}" onchange="currentScenes[${si}].title=this.value;renderPreview()" oninput="currentScenes[${si}].title=this.value;renderPreview()"></div>
+                    <div class="line-image-slot ${scene.image_path?'has-img':''}" id="tslot-${si}" onclick="document.getElementById('tfile-${si}').click()">${scene.image_path?`<img src="/uploads/${sessionId}/thumbnail.${(scene.image_path||'').split('.').pop()}"><button class="rm" onclick="event.stopPropagation();delete currentScenes[${si}].image_path;renderScenes();renderPreview()">&times;</button>`:'+ 썸네일 이미지 업로드'}<input type="file" id="tfile-${si}" accept="image/*" onchange="uploadSceneImage(this,${si})" style="display:none"></div>`;
                 } else {
                     const ld=scene.lines_data||[];
                     const badge=scene.type==='image_text'?'badge-image-text':'badge-text';
@@ -247,12 +431,11 @@
                     <span class="scene-name">${scene.type==='image_text'?'이미지+텍스트':'텍스트'}</span>
                     <span class="scene-info">${ld.length}줄 / ${(ld.length*1.1+0.5).toFixed(1)}초</span></div>`;
 
-                    // 장면 기본 이미지 (image_text인 경우)
                     if(scene.image_slot){
-                        const slotLabels={hooking:'훅킹 이미지',product:'제품 이미지',before_after:'비포/애프터'};
+                        const slotLabels={hooking:'훅킹 이미지',product:'제품 이미지',before_after:'비포/애프터',information:'정보 이미지',list_items:'리스트 이미지'};
                         const hasImg=scene.image_path?'has-img':'';
                         const imgContent=scene.image_path?
-                            `<img src="/uploads/${sessionId}/${scene.image_slot}.${(scene.image_path||'').split('.').pop()}"><button class="rm" onclick="event.stopPropagation();delete currentScenes[${si}].image_path;renderScenes()">&times;</button>`:
+                            `<img src="/uploads/${sessionId}/${scene.image_slot}.${(scene.image_path||'').split('.').pop()}"><button class="rm" onclick="event.stopPropagation();delete currentScenes[${si}].image_path;delete currentScenes[${si}].image_url;renderScenes();renderPreview()">&times;</button>`:
                             `+ ${slotLabels[scene.image_slot]||'이미지'}`;
                         html+=`<div class="line-image-slot ${hasImg}" onclick="document.getElementById('sfile-${si}').click()">${imgContent}<input type="file" id="sfile-${si}" accept="image/*" onchange="uploadSceneImage(this,${si})" style="display:none"></div>`;
                     }
@@ -261,37 +444,38 @@
                         const st=line.style||{};
                         const hasStyle=st.fontSize||st.color||st.font||st.align;
                         const hasLineImg=line.image_path;
-                        html+=`<div class="line-item">
+                        const isSelected = (si === activeSceneIdx && li === previewLineIdx);
+                        html+=`<div class="line-item ${isSelected?'selected':''}">
                             <div class="line-top">
                                 <span class="line-num">${li+1}</span>
-                                <input class="line-input" value="${esc(line.text||'')}" onchange="currentScenes[${si}].lines_data[${li}].text=this.value;updateTotals()">
+                                <input class="line-input" value="${esc(line.text||'')}" onchange="currentScenes[${si}].lines_data[${li}].text=this.value;updateTotals();renderPreview()" oninput="currentScenes[${si}].lines_data[${li}].text=this.value;renderPreview()" onfocus="activeSceneIdx=${si};previewLineIdx=${li};renderPreview()">
                                 <div class="line-actions">
+                                    <button class="line-btn" onclick="moveLine(${si},${li},-1)" title="위로">▲</button>
+                                    <button class="line-btn" onclick="moveLine(${si},${li},1)" title="아래로">▼</button>
                                     <button class="line-btn ${hasStyle?'active':''}" onclick="toggleStyle(${si},${li})" title="스타일">S</button>
                                     <button class="line-btn ${hasLineImg?'active':''}" onclick="document.getElementById('lfile-${si}-${li}').click()" title="이미지">I</button>
                                     <button class="line-btn" onclick="removeLine(${si},${li})" title="삭제">&times;</button>
                                 </div>
                             </div>`;
 
-                        // 줄 이미지
                         if(hasLineImg){
-                            html+=`<div class="line-image-slot has-img"><img src="${line.image_url||''}"><button class="rm" onclick="event.stopPropagation();delete currentScenes[${si}].lines_data[${li}].image_path;delete currentScenes[${si}].lines_data[${li}].image_url;renderScenes()">&times;</button></div>`;
+                            html+=`<div class="line-image-slot has-img"><img src="${line.image_url||''}"><button class="rm" onclick="event.stopPropagation();delete currentScenes[${si}].lines_data[${li}].image_path;delete currentScenes[${si}].lines_data[${li}].image_url;renderScenes();renderPreview()">&times;</button></div>`;
                         }
                         html+=`<input type="file" id="lfile-${si}-${li}" accept="image/*" onchange="uploadLineImage(this,${si},${li})" style="display:none">`;
 
-                        // 스타일 패널
                         html+=`<div class="style-panel" id="sp-${si}-${li}">
                             <div class="style-row"><span class="style-label">폰트</span>
-                                <select class="style-select" onchange="setLineStyle(${si},${li},'font',this.value)">${fontOptions().replace(`value="${st.font||'malgun'}"`,`value="${st.font||'malgun'}" selected`)}</select></div>
+                                <select class="style-select" onchange="setLineStyle(${si},${li},'font',this.value);renderPreview()">${fontOptions().replace(`value="${st.font||'malgun'}"`,`value="${st.font||'malgun'}" selected`)}</select></div>
                             <div class="style-row"><span class="style-label">크기</span>
-                                <input type="range" class="style-range" min="20" max="80" value="${st.fontSize||32}" oninput="setLineStyle(${si},${li},'fontSize',this.value);this.nextElementSibling.textContent=this.value">
+                                <input type="range" class="style-range" min="20" max="80" value="${st.fontSize||32}" oninput="setLineStyle(${si},${li},'fontSize',this.value);this.nextElementSibling.textContent=this.value;renderPreview()">
                                 <span class="style-val">${st.fontSize||32}</span></div>
                             <div class="style-row"><span class="style-label">색상</span>
                                 <div class="color-row">${colorDots(si,li,st.color||'#1A1A1A')}</div></div>
                             <div class="style-row"><span class="style-label">정렬</span>
                                 <div style="display:flex;gap:4px">
-                                    <button class="line-btn ${(!st.align||st.align==='center')?'active':''}" onclick="setLineStyle(${si},${li},'align','center');renderScenes()">중</button>
-                                    <button class="line-btn ${st.align==='left'?'active':''}" onclick="setLineStyle(${si},${li},'align','left');renderScenes()">좌</button>
-                                    <button class="line-btn ${st.align==='right'?'active':''}" onclick="setLineStyle(${si},${li},'align','right');renderScenes()">우</button>
+                                    <button class="line-btn ${(!st.align||st.align==='center')?'active':''}" onclick="setLineStyle(${si},${li},'align','center');renderScenes();renderPreview()">중</button>
+                                    <button class="line-btn ${st.align==='left'?'active':''}" onclick="setLineStyle(${si},${li},'align','left');renderScenes();renderPreview()">좌</button>
+                                    <button class="line-btn ${st.align==='right'?'active':''}" onclick="setLineStyle(${si},${li},'align','right');renderScenes();renderPreview()">우</button>
                                 </div></div>
                         </div></div>`;
                     });
@@ -302,7 +486,7 @@
                 card.innerHTML=html;
                 c.appendChild(card);
             });
-            document.getElementById('btnGenVideo').style.display='block';
+            document.getElementById('btnGenVideo').style.display = currentScenes.length > 0 ? 'block' : 'none';
             updateTotals();
         }
 
@@ -314,15 +498,20 @@
         function addLine(si){
             ensureLinesData(currentScenes[si]);
             currentScenes[si].lines_data.push({text:'새로운 줄',style:{}});
+            previewLineIdx = currentScenes[si].lines_data.length - 1;
+            activeSceneIdx = si;
             renderScenes();
+            renderPreview();
         }
 
         function addImageLine(si){
             ensureLinesData(currentScenes[si]);
             const li=currentScenes[si].lines_data.length;
             currentScenes[si].lines_data.push({text:'',style:{},needsImage:true});
+            previewLineIdx = li;
+            activeSceneIdx = si;
             renderScenes();
-            // 자동으로 파일 선택 열기
+            renderPreview();
             setTimeout(()=>{
                 const f=document.getElementById(`lfile-${si}-${li}`);
                 if(f) f.click();
@@ -331,7 +520,9 @@
 
         function removeLine(si,li){
             currentScenes[si].lines_data.splice(li,1);
+            if(previewLineIdx >= currentScenes[si].lines_data.length) previewLineIdx = currentScenes[si].lines_data.length - 1;
             renderScenes();
+            renderPreview();
         }
 
         async function uploadSceneImage(input,si){
@@ -345,7 +536,8 @@
                 const d=await r.json();
                 if(d.error){ showToast(d.error,true); return; }
                 currentScenes[si].image_path=d.path;
-                renderScenes();
+                currentScenes[si].image_url=d.url;
+                preloadImage(d.url, () => { renderScenes(); renderPreview(); });
                 showToast('이미지 업로드 완료');
             }catch(e){ showToast('업로드 실패',true); }
         }
@@ -362,7 +554,7 @@
                 if(d.error){ showToast(d.error,true); return; }
                 currentScenes[si].lines_data[li].image_path=d.path;
                 currentScenes[si].lines_data[li].image_url=d.url;
-                renderScenes();
+                preloadImage(d.url, () => { renderScenes(); renderPreview(); });
                 showToast('이미지 업로드 완료');
             }catch(e){ showToast('업로드 실패',true); }
         }
@@ -375,7 +567,17 @@
                 const r=await fetch('/api/generate-video',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({scenes:currentScenes,session_id:sessionId})});
                 const d=await r.json();
                 if(d.error){ showToast(d.error,true); document.getElementById('btnGenVideo').style.display='block'; return; }
-                document.getElementById('previewScreen').innerHTML=`<video src="${d.video_url}" controls autoplay loop></video>`;
+                document.getElementById('previewCanvas').style.display='none';
+                document.getElementById('previewPlaceholder').style.display='none';
+                const screen = document.getElementById('previewScreen');
+                const existingVideo = screen.querySelector('video');
+                if(existingVideo) existingVideo.remove();
+                const video = document.createElement('video');
+                video.src = d.video_url;
+                video.controls = true;
+                video.autoplay = true;
+                video.loop = true;
+                screen.appendChild(video);
                 document.getElementById('downloadLink').href=d.video_url;
                 document.getElementById('resultArea').style.display='block';
                 document.getElementById('btnGenVideo').style.display='block';
@@ -387,13 +589,19 @@
 
         function resetAll(){
             sessionId=Math.random().toString(36).substr(2,8);
-            currentScenes=[];
+            currentScenes=[]; activeSceneIdx=-1; previewLineIdx=-1; loadedImages={};
             document.getElementById('topic').value='';
             document.getElementById('description').value='';
             document.getElementById('scenesContainer').innerHTML='<div style="text-align:center;color:#555;padding:40px 16px;font-size:12px;">주제를 입력하고 대본을 생성해주세요</div>';
-            document.getElementById('previewScreen').innerHTML='<div class="placeholder">영상 생성 후<br>미리보기 표시</div>';
+            document.getElementById('previewPlaceholder').style.display='block';
+            document.getElementById('previewCanvas').style.display='none';
+            const screen = document.getElementById('previewScreen');
+            const v = screen.querySelector('video'); if(v) v.remove();
+            document.getElementById('previewPlaceholder').textContent='대본 생성 후\n미리보기 표시';
             document.getElementById('btnGenVideo').style.display='none';
             document.getElementById('resultArea').style.display='none';
+            document.getElementById('previewNav').style.display='none';
+            document.getElementById('previewLabel').textContent='장면을 선택하세요';
             document.getElementById('status').textContent='준비됨';
             updateTotals();
         }

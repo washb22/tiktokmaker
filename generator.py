@@ -47,6 +47,39 @@ def get_available_fonts():
     return {k: v["name"] for k, v in FONTS.items()}
 
 
+def create_simple_thumbnail(title, output_path):
+    """심플 썸네일 - 사용자가 이미지 안 올렸을 때 제목만 표시"""
+    img = Image.new("RGB", (WIDTH, HEIGHT), "#1A1A1A")
+    draw = ImageDraw.Draw(img)
+
+    title_font = get_font(38, bold=True)
+
+    # 제목 줄바꿈 (15자 단위)
+    lines = []
+    while title:
+        if len(title) <= 15:
+            lines.append(title)
+            break
+        idx = title[:15].rfind(" ")
+        if idx == -1:
+            idx = 15
+        lines.append(title[:idx].strip())
+        title = title[idx:].strip()
+
+    total_height = len(lines) * 56
+    y = (HEIGHT - total_height) // 2
+
+    for line in lines:
+        bbox = title_font.getbbox(line)
+        w = bbox[2] - bbox[0]
+        x = (WIDTH - w) // 2
+        draw.text((x, y), line, fill="#FFFFFF", font=title_font)
+        y += 56
+
+    img.save(output_path, quality=95)
+    return img
+
+
 def create_natepann_thumbnail(title, output_path, category="19"):
     """네이트판 스타일 썸네일 생성"""
     img = Image.new("RGB", (WIDTH, HEIGHT), "#FFFFFF")
@@ -203,10 +236,10 @@ def generate_video(scenes, output_dir=None):
                 thumb = thumb.resize((WIDTH, HEIGHT), Image.Resampling.LANCZOS)
                 thumb.save(str(frame_path), quality=95)
             else:
-                create_natepann_thumbnail(
+                # 이미지 없으면 제목 텍스트만 심플하게 표시
+                create_simple_thumbnail(
                     title=scene.get("title", "제목"),
                     output_path=str(frame_path),
-                    category=scene.get("category", "19"),
                 )
             frame_files.append(frame_path)
             durations.append(scene.get("duration", 2.5))

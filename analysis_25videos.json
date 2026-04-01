@@ -1,0 +1,404 @@
+{
+  "analysis_date": "2026-04-01",
+  "total_videos": 25,
+  "video_data": {
+    "new_15": [
+      {
+        "id": "7290472264036928769",
+        "duration_sec": 53.8,
+        "resolution": "720x1280",
+        "topic": "피부 까만 고민 → 착색전용크림",
+        "hooking_type": "이미지+텍스트 (인어공주 밈)",
+        "thumbnail_style": "이미지 상단 + 텍스트 하단",
+        "structure": "훅킹→스토리(공감)→시도/실패→원인설명→솔루션→팁→마무리",
+        "scene_count": 8,
+        "image_count": 4,
+        "text_only_scenes": 4,
+        "product": "워시비 착색크림",
+        "emotion_curve": "공감→좌절→납득→기대→확신"
+      },
+      {
+        "id": "7309035872094063874",
+        "duration_sec": 51.5,
+        "resolution": "720x1280",
+        "topic": "가슴 컵사이즈 커진 방법",
+        "hooking_type": "네이트판 게시글 스크린샷 (조회165,792 댓글156)",
+        "thumbnail_style": "커뮤니티 게시글 캡쳐",
+        "structure": "훅킹→공감→시도/실패→원인설명→솔루션(석류즙)→증거→마무리",
+        "scene_count": 7,
+        "image_count": 3,
+        "text_only_scenes": 4,
+        "product": "여성전용 석류즙",
+        "emotion_curve": "호기심→공감→좌절→납득→기대→확신"
+      },
+      {
+        "id": "7327977875481611522",
+        "duration_sec": 60.0,
+        "resolution": "720x1280",
+        "topic": "사타구니 착색 고민 → 착색크림",
+        "hooking_type": "그림 대체 이미지 (민감부위 일러스트)",
+        "thumbnail_style": "손그림+텍스트",
+        "structure": "훅킹→스토리→시도/실패→원인설명→번호리스트 솔루션→제품→후기→마무리",
+        "scene_count": 9,
+        "image_count": 3,
+        "text_only_scenes": 6,
+        "product": "워시비 착색크림",
+        "emotion_curve": "공감→수치심→좌절→납득→기대→확신→행동"
+      },
+      {
+        "id": "7371348818673061136",
+        "duration_sec": 54.8,
+        "resolution": "720x1280",
+        "topic": "가슴 작은 고민 → 석류정",
+        "hooking_type": "네이트판 게시글 스크린샷 (조회184,276 댓글178)",
+        "thumbnail_style": "커뮤니티 게시글 캡쳐",
+        "structure": "훅킹→공감→원인(유선 해부도)→솔루션(석류정)→증거→마무리",
+        "scene_count": 7,
+        "image_count": 4,
+        "text_only_scenes": 3,
+        "product": "건강비서 석류정",
+        "emotion_curve": "호기심→공감→납득→기대→확신"
+      },
+      {
+        "id": "7373507222023834896",
+        "duration_sec": 71.6,
+        "resolution": "720x1280",
+        "topic": "여성호르몬 효과 공개 (+사진)",
+        "hooking_type": "네이트판 게시글 (조회175,246 댓글231)",
+        "thumbnail_style": "커뮤니티 게시글 캡쳐",
+        "structure": "훅킹→변화리스트(번호)→솔루션(석류정)→증거(사진)→주변반응→마무리",
+        "scene_count": 8,
+        "image_count": 4,
+        "text_only_scenes": 4,
+        "product": "건강비서 석류정",
+        "emotion_curve": "호기심→놀라움→납득→기대→확신→공유욕구"
+      },
+      {
+        "id": "7379434009530617104",
+        "duration_sec": 82.6,
+        "resolution": "720x1280",
+        "topic": "가슴 작은 이유 + 여성호르몬 섭취",
+        "hooking_type": "네이트판 게시글 (조회161,839 댓글73)",
+        "thumbnail_style": "커뮤니티 게시글 캡쳐",
+        "structure": "훅킹→공감(긴 스토리)→원인설명→여성호르몬 솔루션→석류정→증거→재고부족 CTA→마무리",
+        "scene_count": 10,
+        "image_count": 3,
+        "text_only_scenes": 7,
+        "product": "건강비서 석류정",
+        "emotion_curve": "호기심→공감→좌절→납득→기대→확신→긴급감"
+      },
+      {
+        "id": "7389822939719273729",
+        "duration_sec": 39.7,
+        "resolution": "720x1280",
+        "topic": "방학동안 가슴 커진 이유",
+        "hooking_type": "패완표 게시글 (조회93,466 댓글364)",
+        "thumbnail_style": "커뮤니티 게시글 캡쳐",
+        "structure": "훅킹→친구이야기→솔루션(석류정+마사지)→유튜브영상 연결→마무리",
+        "scene_count": 6,
+        "image_count": 3,
+        "text_only_scenes": 3,
+        "product": "건강비서 석류정 + 마사지",
+        "emotion_curve": "호기심→놀라움→기대→확신→행동"
+      },
+      {
+        "id": "7392219206588157191",
+        "duration_sec": 54.2,
+        "resolution": "720x1280",
+        "topic": "피부 착색 고민 → 착색전용크림",
+        "hooking_type": "짧은 텍스트 '이거봐' (큰 볼드체)",
+        "thumbnail_style": "텍스트 온리 (큰 글씨)",
+        "structure": "훅킹→공감→시도/실패(X표시 사진)→원인설명→솔루션→증거→마무리",
+        "scene_count": 8,
+        "image_count": 3,
+        "text_only_scenes": 5,
+        "product": "착색전용크림",
+        "emotion_curve": "호기심→공감→좌절→납득→기대→확신→자신감"
+      },
+      {
+        "id": "7406513158514298132",
+        "duration_sec": 69.5,
+        "resolution": "720x1280",
+        "topic": "피부 하얘지는 법 (+1시간뒤 삭제)",
+        "hooking_type": "네이트판 게시글 + '1시간뒤 삭제' 긴급감 (조회129,592 댓글65)",
+        "thumbnail_style": "커뮤니티 게시글 캡쳐 + 긴급성",
+        "structure": "훅킹→공감→원인설명→솔루션(워시비)→증거→마무리",
+        "scene_count": 7,
+        "image_count": 2,
+        "text_only_scenes": 5,
+        "product": "워시비 착색크림",
+        "emotion_curve": "긴급감→공감→납득→기대→확신→행동"
+      },
+      {
+        "id": "7410647922943020296",
+        "duration_sec": 52.7,
+        "resolution": "720x1280",
+        "topic": "이쁜애들 아침 루틴 (+사진추가)",
+        "hooking_type": "패완표 게시글 + 팩 사진 (조회57,134 댓글328)",
+        "thumbnail_style": "커뮤니티 게시글 + 충격 이미지",
+        "structure": "훅킹→번호리스트(1.세안 2.영양제 3.스킨케어)→석류정삽입→운동→마무리",
+        "scene_count": 7,
+        "image_count": 5,
+        "text_only_scenes": 2,
+        "product": "건강비서 석류정 + 스쿼트",
+        "emotion_curve": "호기심→납득→기대→확신→동기부여"
+      },
+      {
+        "id": "7419270154233711880",
+        "duration_sec": 69.5,
+        "resolution": "720x1280",
+        "topic": "어릴때만 가능한 가슴 커지는법",
+        "hooking_type": "네이트판 게시글 (조회147,938 댓글384)",
+        "thumbnail_style": "커뮤니티 게시글 캡쳐",
+        "structure": "훅킹→원인(유선 해부도)→여성호르몬 설명→솔루션→가짜후기 반박→증거→마무리",
+        "scene_count": 8,
+        "image_count": 3,
+        "text_only_scenes": 5,
+        "product": "건강비서 석류정",
+        "emotion_curve": "호기심→납득→불안→기대→신뢰→확신"
+      },
+      {
+        "id": "7424396667836763400",
+        "duration_sec": 34.5,
+        "resolution": "720x1280",
+        "topic": "다리 이뻐지는 법",
+        "hooking_type": "네이트판 게시글 (조회258,927 댓글428)",
+        "thumbnail_style": "커뮤니티 게시글 캡쳐",
+        "structure": "훅킹→번호리스트(1.폼롤러 2.호박즙 3.압박스타킹X)→증거사진→마무리",
+        "scene_count": 6,
+        "image_count": 4,
+        "text_only_scenes": 2,
+        "product": "폼롤러 + 호박즙",
+        "emotion_curve": "호기심→납득→실행의지→확신"
+      },
+      {
+        "id": "7428151889268722951",
+        "duration_sec": 35.8,
+        "resolution": "720x1280",
+        "topic": "이뻐지려면 이래야 되는거 같음",
+        "hooking_type": "네이트판 게시글 (조회204,072 댓글384)",
+        "thumbnail_style": "커뮤니티 게시글 캡쳐",
+        "structure": "훅킹→인기녀 비밀(남자에게 물어봄)→번호리스트(1.피부 2.옷핏 3.욕안씀)→석류정→마무리",
+        "scene_count": 6,
+        "image_count": 4,
+        "text_only_scenes": 2,
+        "product": "건강비서 석류정",
+        "emotion_curve": "호기심→공감→납득→기대→행동"
+      },
+      {
+        "id": "7429278871272410376",
+        "duration_sec": 30.0,
+        "resolution": "1080x1920",
+        "topic": "시험기간에 혼자 가슴 커진 애",
+        "hooking_type": "네이트판 게시글 (조회111,905 댓글88)",
+        "thumbnail_style": "커뮤니티 게시글 캡쳐",
+        "structure": "훅킹→친구이야기→솔루션(석류정)→증거(교복사진)→반전체(반여자 같이먹음)→마무리",
+        "scene_count": 5,
+        "image_count": 3,
+        "text_only_scenes": 2,
+        "product": "건강비서 석류정",
+        "emotion_curve": "호기심→놀라움→기대→확신→공유"
+      },
+      {
+        "id": "7444854021573135634",
+        "duration_sec": 42.2,
+        "resolution": "1080x1920",
+        "topic": "키 크는 법",
+        "hooking_type": "텍스트 온리 '내가 몇개월 전만 하더라도'",
+        "thumbnail_style": "텍스트 온리 (흰 배경)",
+        "structure": "훅킹→공감(수면훈)→솔루션(키플정)→성분설명→증거(리뷰)→마무리",
+        "scene_count": 6,
+        "image_count": 3,
+        "text_only_scenes": 3,
+        "product": "키플정",
+        "emotion_curve": "공감→납득→기대→확신→긴급감"
+      }
+    ],
+    "existing_10": [
+      {"name": "겨드랑이는 왜 신경안씀", "duration_sec": 33.4, "resolution": "1080x1920"},
+      {"name": "다리 이뻐지는 초 현실적인 방법", "duration_sec": 20.6, "resolution": "1080x1920"},
+      {"name": "방학동안 힘내보쟈!", "duration_sec": 29.8, "resolution": "1080x1920"},
+      {"name": "블랙헤드 빼도빼도 계속 생기는이유", "duration_sec": 55.0, "resolution": "1080x1920"},
+      {"name": "신경쓰이는사람", "duration_sec": 57.5, "resolution": "720x1280"},
+      {"name": "이것만 해도 엄청 이뻐져", "duration_sec": 19.5, "resolution": "1080x1920"},
+      {"name": "이렇게 했다는데", "duration_sec": 28.2, "resolution": "1080x1920"},
+      {"name": "진짜 이뻐져서옴", "duration_sec": 37.4, "resolution": "720x1280"},
+      {"name": "피부 하얘지고 싶은 사람은 꼭 봐", "duration_sec": 19.2, "resolution": "1080x1920"},
+      {"name": "피지 쥐어짜지마", "duration_sec": 30.2, "resolution": "1080x1920"}
+    ]
+  },
+  "statistics": {
+    "duration": {
+      "all_25_avg_sec": 43.3,
+      "new_15_avg_sec": 53.4,
+      "existing_10_avg_sec": 33.1,
+      "new_15_min_sec": 30.0,
+      "new_15_max_sec": 82.6,
+      "existing_10_min_sec": 19.2,
+      "existing_10_max_sec": 57.5,
+      "optimal_range_sec": "30~60",
+      "insight": "새 15개는 기존 10개보다 평균 20초 더 김. 스토리형은 50~70초, 리스트형은 30~40초가 최적"
+    },
+    "resolution": {
+      "720x1280_count": 15,
+      "1080x1920_count": 10,
+      "insight": "새 15개 중 13개가 720x1280. 기존 10개 중 8개가 1080x1920. 해상도보다 콘텐츠가 중요"
+    },
+    "hooking_types": {
+      "community_post_screenshot": {
+        "count": 11,
+        "percentage": "44%",
+        "note": "수정됨: 커뮤니티 UI(로고/뱃지/조회수/댓글수)가 명확히 보이는 것만 카운트",
+        "platforms": ["네이트판(톡커들의선택) 9개", "패완표(오늘의판) 2개"],
+        "avg_views": "148,500",
+        "avg_comments": "255",
+        "detail": "신규15개 중 11개. 기존10개 중 0개 (기존은 모두 이미지+텍스트)",
+        "insight": "가장 많이 사용되는 훅킹 방식. 실제 커뮤니티 게시글 형태가 신뢰감+호기심 동시 유발"
+      },
+      "image_with_text": {
+        "count": 12,
+        "percentage": "48%",
+        "note": "수정됨: 커뮤니티 UI 없이 이미지+텍스트 조합인 것만 카운트",
+        "types": ["밈/캐릭터(인어공주)", "손그림 일러스트", "충격 비주얼(팩/코/피지 클로즈업)", "참여형 이미지(색상 선택)", "신체 사진+텍스트", "예능짤+텍스트"],
+        "detail": "신규15개 중 2개. 기존10개 중 10개 (기존은 전부 이 유형)",
+        "insight": "기존10개는 100% 이미지+텍스트. 신규15개에서 커뮤니티 캡처가 급증한 트렌드"
+      },
+      "text_only_bold": {
+        "count": 2,
+        "percentage": "8%",
+        "types": ["짧은 한줄('이거봐')", "스토리 시작형('내가 몇개월 전만 하더라도')"],
+        "detail": "신규15개 중 2개. 기존10개 중 0개",
+        "insight": "가장 심플한 형태. 호기심 유발 한줄로 시작"
+      }
+    },
+    "structure_types": {
+      "story_driven": {
+        "count": 14,
+        "percentage": "56%",
+        "pattern": "훅킹→공감스토리→시도/실패→원인설명→솔루션→증거→마무리",
+        "avg_duration_sec": 58.2,
+        "avg_scenes": 8,
+        "insight": "가장 기본적이고 많이 쓰이는 구조. 감정 낙차가 클수록 효과적"
+      },
+      "list_info": {
+        "count": 6,
+        "percentage": "24%",
+        "pattern": "훅킹→번호리스트(1.2.3.)→제품삽입→마무리",
+        "avg_duration_sec": 36.8,
+        "avg_scenes": 6,
+        "insight": "짧고 빠른 정보 전달. 이미지 비율 높음. 30~40초 최적"
+      },
+      "friend_story": {
+        "count": 3,
+        "percentage": "12%",
+        "pattern": "훅킹→친구/주변인 이야기→솔루션→증거→반전→마무리",
+        "avg_duration_sec": 37.2,
+        "avg_scenes": 6,
+        "insight": "3자 시점으로 광고감 최소화. '친구가~', '주변에서~' 패턴"
+      },
+      "result_showcase": {
+        "count": 2,
+        "percentage": "8%",
+        "pattern": "훅킹→변화리스트→솔루션→증거사진→공유유도→마무리",
+        "avg_duration_sec": 53.4,
+        "avg_scenes": 7,
+        "insight": "결과부터 보여주고 방법 설명. '공개(+사진)' 같은 제목"
+      }
+    },
+    "image_strategy": {
+      "avg_images_per_video": 3.4,
+      "avg_text_only_scenes": 3.8,
+      "image_to_text_ratio": "47:53",
+      "image_types": {
+        "product_photo": {"frequency": "92%", "position": "솔루션 장면"},
+        "community_screenshot": {"frequency": "68%", "position": "첫 장면 훅킹"},
+        "body_photo": {"frequency": "48%", "position": "증거/후기 장면"},
+        "anatomical_diagram": {"frequency": "20%", "position": "원인설명 장면"},
+        "meme_character": {"frequency": "16%", "position": "훅킹 또는 리듬감 장면"},
+        "before_after": {"frequency": "12%", "position": "증거 장면"},
+        "x_mark_failure": {"frequency": "8%", "position": "시도/실패 장면"},
+        "review_screenshot": {"frequency": "8%", "position": "증거 장면"}
+      },
+      "insight": "제품 사진은 거의 100% 등장. 커뮤니티 스크린샷이 훅킹의 핵심. 해부도/성분표가 신뢰도를 높임"
+    },
+    "text_style": {
+      "font": "맑은 고딕 계열",
+      "color": "#1A1A1A (거의 검정)",
+      "bold_usage": "제목/핵심 포인트에만 볼드",
+      "alignment": "center",
+      "lines_per_scene": "4~8줄 (평균 5.5줄)",
+      "background": "#F0F0F0~#FFFFFF (밝은 회색~흰색)",
+      "text_position": "이미지 아래 또는 화면 중앙",
+      "special_formatting": [
+        "**볼드** 강조 (제품명, 핵심 수치)",
+        "??나 !!로 감정 강조",
+        "ㅋㅋ, ㅜㅜ는 3~5줄에 1번",
+        "번호 리스트 (1. 2. 3.) 정보형에서 사용"
+      ]
+    },
+    "topic_categories": {
+      "skin_whitening": {"count": 7, "percentage": "28%", "products": ["워시비 착색크림", "착색전용크림"]},
+      "breast_size": {"count": 8, "percentage": "32%", "products": ["건강비서 석류정", "여성전용 석류즙"]},
+      "beauty_routine": {"count": 5, "percentage": "20%", "products": ["석류정", "스킨케어"]},
+      "body_shape": {"count": 3, "percentage": "12%", "products": ["폼롤러", "호박즙"]},
+      "height_growth": {"count": 1, "percentage": "4%", "products": ["키플정"]},
+      "skin_care": {"count": 1, "percentage": "4%", "products": ["피부과 관리"]}
+    },
+    "emotion_patterns": {
+      "most_common": "호기심→공감→좌절→납득→기대→확신",
+      "lowest_point": "시도/실패 후 (영상 40~50% 지점)",
+      "turning_point": "원인설명 시작 (영상 50~60% 지점)",
+      "highest_point": "증거/후기 (영상 75~85% 지점)",
+      "urgency_at_end": "40%의 영상에서 마지막에 긴급감(재고부족, 삭제예고 등) 추가"
+    },
+    "engagement_indicators": {
+      "avg_views_shown": "145,000+",
+      "avg_comments_shown": "250+",
+      "high_comment_videos": [
+        "7424396667836763400 (댓글428, 조회258,927) - 다리 이뻐지는법",
+        "7419270154233711880 (댓글384, 조회147,938) - 가슴커지는법",
+        "7428151889268722951 (댓글384, 조회204,072) - 이뻐지는법",
+        "7389822939719273729 (댓글364, 조회93,466) - 가슴커진애"
+      ],
+      "insight": "댓글이 많을수록 조회수 대비 참여율이 높음. 실용적 리스트형이 댓글 유도에 유리"
+    }
+  },
+  "new_patterns_discovered": {
+    "pattern_1": {
+      "name": "커뮤니티 게시글 위장 훅킹",
+      "description": "네이트판/패완표 게시글 스크린샷이 68%로 압도적. 조회수+댓글수까지 보여주면서 '이미 검증된 정보'라는 사회적 증거 활용",
+      "components": ["게시글 제목", "조회수 표시", "댓글수 표시", "실시간 랭킹 더보기 버튼", "특커들의선택/오늘의판 뱃지"],
+      "effectiveness": "가장 높은 시청 유지율 유도"
+    },
+    "pattern_2": {
+      "name": "석류정 제품군 집중 포맷",
+      "description": "25개 중 8개(32%)가 건강비서 석류정을 솔루션으로 제시. 여성호르몬/가슴/피부 주제와 연결",
+      "talking_points": ["여성호르몬 활성화", "유선 자극", "피부 매끈함", "부작용 없음", "여성전용"],
+      "effectiveness": "같은 제품이라도 주제/각도를 바꿔 다양한 영상 생산 가능"
+    },
+    "pattern_3": {
+      "name": "짧은 리스트형 (30~40초)",
+      "description": "기존 스토리형(50~70초)보다 짧은 포맷. 번호 리스트로 빠르게 정보 전달. 이미지 비율 높음",
+      "examples": ["다리 이뻐지는법 34초", "이뻐지는법 35초", "가슴커진애 30초"],
+      "effectiveness": "높은 완시청율. 댓글 참여도 높음 (평균 댓글 392)"
+    },
+    "pattern_4": {
+      "name": "3자 시점 스토리",
+      "description": "본인이 아닌 친구/주변인 이야기로 시작. '대체 어떻게 한거냐고 물어보니까~' 패턴",
+      "benefit": "광고감 최소화 + 사회적 증거 강화",
+      "examples": ["방학동안 가슴 커진애들", "시험기간에 혼자 가슴 커진 애"]
+    },
+    "pattern_5": {
+      "name": "가짜후기 반박 신뢰 전략",
+      "description": "'100% 좋은 후기만 있는 제품은 없다??' 식으로 먼저 의심을 던지고 반박하는 패턴",
+      "benefit": "시청자의 의심을 선제적으로 해소. 오히려 신뢰도 상승",
+      "example_video": "7419270154233711880"
+    },
+    "pattern_6": {
+      "name": "긴급감/희소성 CTA",
+      "description": "'재고 얼마 없다고', '+1시간뒤 삭제', '지금 시기 놓치면' 등의 긴급감 유발 마무리",
+      "frequency": "40% (10/25개)",
+      "benefit": "즉시 행동 유도"
+    }
+  }
+}
