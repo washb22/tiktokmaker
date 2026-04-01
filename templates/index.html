@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TikTok Generator</title>
+    <style>
+        :root { --bg:#0d0d0d; --surface:#1a1a1a; --border:#2a2a2a; --accent:#fe2c55; --cyan:#25f4ee; --text:#e0e0e0; --muted:#888; }
+        * { margin:0; padding:0; box-sizing:border-box; }
+        body { font-family:'Malgun Gothic',sans-serif; background:var(--bg); color:var(--text); min-height:100vh; }
+
+        .header { background:linear-gradient(135deg,#fe2c55,#25f4ee); padding:14px 32px; display:flex; align-items:center; justify-content:space-between; }
+        .header h1 { font-size:20px; color:white; }
+        .header .status { font-size:12px; color:rgba(255,255,255,0.8); }
+
+        .container { max-width:1500px; margin:0 auto; padding:20px; display:grid; grid-template-columns:350px 1fr 280px; gap:20px; min-height:calc(100vh - 54px); }
+        .panel { background:var(--surface); border-radius:12px; padding:18px; border:1px solid var(--border); }
+        .panel h2 { font-size:14px; color:var(--accent); margin-bottom:14px; padding-bottom:8px; border-bottom:1px solid var(--border); }
+
+        .input-group { margin-bottom:14px; }
+        .input-group label { display:block; font-size:11px; color:var(--muted); margin-bottom:5px; }
+        .input-group input,.input-group textarea { width:100%; background:#252525; border:1px solid #333; border-radius:7px; padding:9px 12px; color:var(--text); font-size:13px; font-family:inherit; }
+        .input-group input:focus,.input-group textarea:focus { outline:none; border-color:var(--accent); }
+        .input-group textarea { resize:vertical; min-height:70px; }
+
+        .btn { width:100%; padding:11px; border:none; border-radius:8px; font-size:13px; font-weight:bold; cursor:pointer; font-family:inherit; transition:all 0.2s; }
+        .btn-primary { background:linear-gradient(135deg,#fe2c55,#ff6b81); color:white; }
+        .btn-primary:hover { transform:translateY(-1px); }
+        .btn-primary:disabled { opacity:0.5; cursor:not-allowed; transform:none; }
+        .btn-generate { background:linear-gradient(135deg,#25f4ee,#00c9b7); color:#0f0f0f; margin-top:10px; }
+
+        /* 장면 편집 */
+        .scenes-panel { overflow-y:auto; max-height:calc(100vh - 100px); }
+        .scene-card { background:#222; border-radius:10px; padding:12px; margin-bottom:10px; border:1px solid #333; }
+        .scene-header { display:flex; align-items:center; gap:6px; margin-bottom:8px; }
+        .scene-badge { font-size:10px; padding:2px 8px; border-radius:10px; font-weight:bold; }
+        .badge-thumbnail { background:#ff9800; color:#000; }
+        .badge-image-text { background:#2196f3; color:white; }
+        .badge-text { background:#555; color:white; }
+        .scene-name { font-size:11px; color:var(--muted); flex:1; }
+        .scene-info { font-size:10px; color:#666; }
+
+        /* 줄 편집 */
+        .line-item { background:#1a1a1a; border:1px solid #333; border-radius:8px; padding:8px; margin-bottom:6px; }
+        .line-top { display:flex; align-items:center; gap:5px; margin-bottom:4px; }
+        .line-num { font-size:10px; color:#555; width:18px; text-align:right; flex-shrink:0; }
+        .line-input { flex:1; background:#252525; border:1px solid #333; border-radius:5px; padding:6px 8px; color:var(--text); font-size:12px; font-family:inherit; }
+        .line-input:focus { outline:none; border-color:var(--accent); }
+        .line-actions { display:flex; gap:3px; }
+        .line-btn { background:none; border:1px solid #444; color:#888; cursor:pointer; border-radius:4px; width:24px; height:24px; font-size:11px; display:flex; align-items:center; justify-content:center; }
+        .line-btn:hover { border-color:var(--accent); color:var(--accent); }
+        .line-btn.active { background:var(--accent); border-color:var(--accent); color:white; }
+
+        /* 스타일 패널 */
+        .style-panel { display:none; background:#151515; border-radius:6px; padding:8px; margin-top:4px; }
+        .style-panel.show { display:block; }
+        .style-row { display:flex; align-items:center; gap:6px; margin-bottom:6px; }
+        .style-label { font-size:10px; color:#666; width:36px; flex-shrink:0; }
+        .style-select { background:#252525; border:1px solid #333; border-radius:4px; padding:3px 6px; color:var(--text); font-size:11px; flex:1; font-family:inherit; }
+        .style-range { flex:1; accent-color:var(--accent); height:16px; }
+        .style-val { font-size:10px; color:var(--muted); min-width:22px; text-align:right; }
+
+        /* 색상 */
+        .color-row { display:flex; gap:4px; align-items:center; flex:1; }
+        .color-dot { width:20px; height:20px; border-radius:50%; cursor:pointer; border:2px solid transparent; transition:border-color 0.15s; }
+        .color-dot:hover { border-color:#888; }
+        .color-dot.sel { border-color:white; }
+        .color-picker { width:20px; height:20px; border-radius:50%; border:2px solid #444; cursor:pointer; padding:0; }
+
+        /* 줄 이미지 */
+        .line-image-slot { margin-top:4px; border:1px dashed #444; border-radius:6px; padding:6px; text-align:center; cursor:pointer; font-size:10px; color:#555; position:relative; }
+        .line-image-slot:hover { border-color:var(--accent); }
+        .line-image-slot.has-img { border-style:solid; border-color:var(--cyan); padding:4px; }
+        .line-image-slot img { max-width:100%; max-height:80px; border-radius:4px; }
+        .line-image-slot .rm { position:absolute; top:2px; right:2px; background:var(--accent); color:white; border:none; border-radius:50%; width:16px; height:16px; cursor:pointer; font-size:10px; }
+
+        .add-line-btn { background:#252525; border:1px dashed #444; border-radius:6px; padding:5px; color:#666; cursor:pointer; font-size:11px; text-align:center; margin-top:4px; font-family:inherit; }
+        .add-line-btn:hover { border-color:var(--accent); color:var(--accent); }
+
+        /* 썸네일 */
+        .thumb-input { width:100%; background:#1a1a1a; border:1px solid #333; border-radius:5px; padding:7px 9px; color:var(--text); font-size:12px; font-family:inherit; }
+        .thumb-input:focus { outline:none; border-color:#ff9800; }
+        .thumb-row { display:flex; gap:6px; margin-bottom:6px; }
+        .thumb-row > div { flex:1; }
+        .thumb-row label { font-size:10px; color:var(--muted); display:block; margin-bottom:3px; }
+
+        /* 미리보기 */
+        .preview-panel { position:sticky; top:20px; }
+        .phone-frame { background:#000; border-radius:18px; padding:5px; aspect-ratio:9/16; max-height:460px; overflow:hidden; margin-bottom:10px; }
+        .phone-screen { background:#f0f0f0; border-radius:14px; width:100%; height:100%; display:flex; align-items:center; justify-content:center; overflow:hidden; }
+        .phone-screen video { width:100%; height:100%; object-fit:contain; border-radius:14px; }
+        .phone-screen .placeholder { color:#999; font-size:11px; text-align:center; padding:14px; }
+
+        .total-info { background:#222; border-radius:7px; padding:8px; font-size:11px; color:var(--muted); margin-bottom:10px; }
+        .total-info span { color:var(--cyan); font-weight:bold; }
+
+        .result-actions { display:flex; gap:6px; margin-top:8px; }
+        .result-actions a,.result-actions button { flex:1; padding:9px; border-radius:7px; text-align:center; text-decoration:none; font-size:12px; font-weight:bold; font-family:inherit; cursor:pointer; border:none; }
+        .btn-download { background:var(--cyan); color:#0f0f0f; }
+        .btn-reset { background:#333; color:var(--text); }
+
+        .loading { display:none; text-align:center; padding:24px; }
+        .loading.show { display:block; }
+        .spinner { width:32px; height:32px; border:3px solid #333; border-top-color:var(--accent); border-radius:50%; animation:spin .8s linear infinite; margin:0 auto 8px; }
+        @keyframes spin { to { transform:rotate(360deg); } }
+
+        .toast { position:fixed; bottom:20px; right:20px; background:#333; color:var(--text); padding:9px 16px; border-radius:7px; font-size:12px; transform:translateY(70px); opacity:0; transition:all .3s; z-index:1000; }
+        .toast.show { transform:translateY(0); opacity:1; }
+        .toast.error { background:var(--accent); color:white; }
+
+        @media(max-width:1200px) { .container { grid-template-columns:1fr; } .preview-panel { position:static; } .phone-frame { max-height:360px; margin:0 auto; max-width:210px; } }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>TikTok Video Generator</h1>
+        <div class="status" id="status">준비됨</div>
+    </div>
+
+    <div class="container">
+        <div class="panel">
+            <h2>1. 주제 입력</h2>
+            <div class="input-group">
+                <label>주제 / 제품명</label>
+                <input type="text" id="topic" placeholder="예: 비타민C 세럼...">
+            </div>
+            <div class="input-group">
+                <label>상세 설명</label>
+                <textarea id="description" placeholder="제품 특징, 효과, 타겟..."></textarea>
+            </div>
+            <button class="btn btn-primary" id="btnGenScript" onclick="generateScript()">대본 생성</button>
+            <div class="loading" id="scriptLoading"><div class="spinner"></div><div style="font-size:12px;color:var(--muted)">대본 생성 중...</div></div>
+        </div>
+
+        <div class="panel scenes-panel">
+            <h2>2. 장면 편집 (한 줄 = 1.1초)</h2>
+            <div id="scenesContainer"><div style="text-align:center;color:#555;padding:40px 16px;font-size:12px;">주제를 입력하고 대본을 생성해주세요</div></div>
+            <button class="btn btn-generate" id="btnGenVideo" style="display:none" onclick="generateVideo()">영상 생성</button>
+            <div class="loading" id="videoLoading"><div class="spinner"></div><div style="font-size:12px;color:var(--muted)">영상 생성 중...</div></div>
+        </div>
+
+        <div class="panel preview-panel">
+            <h2>3. 결과</h2>
+            <div class="total-info" id="totalInfo">총 <span id="totalLines">0</span>줄 / 예상 <span id="totalDuration">0</span>초</div>
+            <div class="phone-frame"><div class="phone-screen" id="previewScreen"><div class="placeholder">영상 생성 후<br>미리보기 표시</div></div></div>
+            <div id="resultArea" style="display:none"><div class="result-actions"><a class="btn-download" id="downloadLink" href="#" download>다운로드</a><button class="btn-reset" onclick="resetAll()">새로 만들기</button></div></div>
+        </div>
+    </div>
+
+    <div class="toast" id="toast"></div>
+
+    <script>
+        let sessionId = Math.random().toString(36).substr(2,8);
+        let currentScenes = [];
+        let availableFonts = {};
+        const defaultColors = ['#1A1A1A','#000000','#FFFFFF','#fe2c55','#2196f3','#ff9800','#4CAF50'];
+
+        // 폰트 목록 로드
+        fetch('/api/fonts').then(r=>r.json()).then(d=>{ availableFonts=d; });
+
+        function showToast(m,e=false){ const t=document.getElementById('toast'); t.textContent=m; t.className='toast show'+(e?' error':''); setTimeout(()=>t.className='toast',3000); }
+
+        function esc(s){ return s.replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+        function updateTotals(){
+            let tl=0, td=0;
+            currentScenes.forEach(s=>{
+                if(s.type==='thumbnail'){ td+=s.duration||2.5; }
+                else{ const ld=s.lines_data||[]; tl+=ld.length; td+=ld.length*1.1+0.5; }
+            });
+            document.getElementById('totalLines').textContent=tl;
+            document.getElementById('totalDuration').textContent=td.toFixed(1);
+        }
+
+        function ensureLinesData(scene){
+            if(!scene.lines_data){
+                scene.lines_data = (scene.lines||[]).map(l=>({text:l,style:{}}));
+                delete scene.lines;
+            }
+            return scene.lines_data;
+        }
+
+        async function generateScript(){
+            const topic=document.getElementById('topic').value.trim();
+            const desc=document.getElementById('description').value.trim();
+            if(!topic){ showToast('주제를 입력해주세요',true); return; }
+            document.getElementById('btnGenScript').disabled=true;
+            document.getElementById('scriptLoading').classList.add('show');
+            document.getElementById('status').textContent='대본 생성 중...';
+            try{
+                const res=await fetch('/api/generate-script',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({topic,description:desc})});
+                const data=await res.json();
+                if(data.error){ showToast(data.error,true); return; }
+                currentScenes=data.scenes;
+                currentScenes.forEach(s=>{ if(s.type!=='thumbnail') ensureLinesData(s); });
+                renderScenes();
+                showToast('대본 생성 완료!');
+                document.getElementById('status').textContent='편집 중';
+            }catch(e){ showToast('오류: '+e.message,true); }
+            finally{ document.getElementById('btnGenScript').disabled=false; document.getElementById('scriptLoading').classList.remove('show'); }
+        }
+
+        function fontOptions(){
+            let h='';
+            for(const[k,n] of Object.entries(availableFonts)){
+                h+=`<option value="${k}">${n}</option>`;
+            }
+            return h||'<option value="malgun">맑은 고딕</option>';
+        }
+
+        function colorDots(si,li,currentColor){
+            let h='';
+            defaultColors.forEach(c=>{
+                const sel=c===currentColor?'sel':'';
+                h+=`<div class="color-dot ${sel}" style="background:${c}" onclick="setLineStyle(${si},${li},'color','${c}');renderScenes()"></div>`;
+            });
+            h+=`<input type="color" class="color-picker" value="${currentColor||'#1A1A1A'}" onchange="setLineStyle(${si},${li},'color',this.value);renderScenes()">`;
+            return h;
+        }
+
+        function setLineStyle(si,li,prop,val){
+            const ld=currentScenes[si].lines_data[li];
+            if(!ld.style) ld.style={};
+            ld.style[prop]= prop==='fontSize'?parseInt(val):val;
+        }
+
+        function renderScenes(){
+            const c=document.getElementById('scenesContainer');
+            c.innerHTML='';
+            const labels={hooking:'훅킹+공감',story:'스토리',information:'원인/정보',info:'원인/정보',solution:'솔루션',proof:'증거/후기',result:'증거/후기',evidence:'증거/후기',closing:'마무리',recommendation:'마무리'};
+
+            currentScenes.forEach((scene,si)=>{
+                const card=document.createElement('div');
+                card.className='scene-card';
+                let html='';
+
+                if(scene.type==='thumbnail'){
+                    html=`<div class="scene-header"><span class="scene-badge badge-thumbnail">썸네일</span><span class="scene-name">네이트판</span></div>
+                    <div class="thumb-row"><div style="flex:1"><label>게시글 제목</label><input class="thumb-input" value="${esc(scene.title||'')}" onchange="currentScenes[${si}].title=this.value"></div>
+                    <div style="width:60px"><label>번호</label><input class="thumb-input" value="${esc(scene.category||'19')}" onchange="currentScenes[${si}].category=this.value"></div></div>
+                    <div class="line-image-slot" id="tslot-${si}" onclick="document.getElementById('tfile-${si}').click()">+ 커스텀 썸네일 (선택)<input type="file" id="tfile-${si}" accept="image/*" onchange="uploadSceneImage(this,${si})" style="display:none"></div>`;
+                } else {
+                    const ld=scene.lines_data||[];
+                    const badge=scene.type==='image_text'?'badge-image-text':'badge-text';
+                    const lbl=labels[scene.name]||scene.name||'';
+                    html=`<div class="scene-header"><span class="scene-badge ${badge}">${lbl}</span>
+                    <span class="scene-name">${scene.type==='image_text'?'이미지+텍스트':'텍스트'}</span>
+                    <span class="scene-info">${ld.length}줄 / ${(ld.length*1.1+0.5).toFixed(1)}초</span></div>`;
+
+                    // 장면 기본 이미지 (image_text인 경우)
+                    if(scene.image_slot){
+                        const slotLabels={hooking:'훅킹 이미지',product:'제품 이미지',before_after:'비포/애프터'};
+                        const hasImg=scene.image_path?'has-img':'';
+                        const imgContent=scene.image_path?
+                            `<img src="/uploads/${sessionId}/${scene.image_slot}.${(scene.image_path||'').split('.').pop()}"><button class="rm" onclick="event.stopPropagation();delete currentScenes[${si}].image_path;renderScenes()">&times;</button>`:
+                            `+ ${slotLabels[scene.image_slot]||'이미지'}`;
+                        html+=`<div class="line-image-slot ${hasImg}" onclick="document.getElementById('sfile-${si}').click()">${imgContent}<input type="file" id="sfile-${si}" accept="image/*" onchange="uploadSceneImage(this,${si})" style="display:none"></div>`;
+                    }
+
+                    ld.forEach((line,li)=>{
+                        const st=line.style||{};
+                        const hasStyle=st.fontSize||st.color||st.font||st.align;
+                        const hasLineImg=line.image_path;
+                        html+=`<div class="line-item">
+                            <div class="line-top">
+                                <span class="line-num">${li+1}</span>
+                                <input class="line-input" value="${esc(line.text||'')}" onchange="currentScenes[${si}].lines_data[${li}].text=this.value;updateTotals()">
+                                <div class="line-actions">
+                                    <button class="line-btn ${hasStyle?'active':''}" onclick="toggleStyle(${si},${li})" title="스타일">S</button>
+                                    <button class="line-btn ${hasLineImg?'active':''}" onclick="document.getElementById('lfile-${si}-${li}').click()" title="이미지">I</button>
+                                    <button class="line-btn" onclick="removeLine(${si},${li})" title="삭제">&times;</button>
+                                </div>
+                            </div>`;
+
+                        // 줄 이미지
+                        if(hasLineImg){
+                            html+=`<div class="line-image-slot has-img"><img src="${line.image_url||''}"><button class="rm" onclick="event.stopPropagation();delete currentScenes[${si}].lines_data[${li}].image_path;delete currentScenes[${si}].lines_data[${li}].image_url;renderScenes()">&times;</button></div>`;
+                        }
+                        html+=`<input type="file" id="lfile-${si}-${li}" accept="image/*" onchange="uploadLineImage(this,${si},${li})" style="display:none">`;
+
+                        // 스타일 패널
+                        html+=`<div class="style-panel" id="sp-${si}-${li}">
+                            <div class="style-row"><span class="style-label">폰트</span>
+                                <select class="style-select" onchange="setLineStyle(${si},${li},'font',this.value)">${fontOptions().replace(`value="${st.font||'malgun'}"`,`value="${st.font||'malgun'}" selected`)}</select></div>
+                            <div class="style-row"><span class="style-label">크기</span>
+                                <input type="range" class="style-range" min="20" max="80" value="${st.fontSize||32}" oninput="setLineStyle(${si},${li},'fontSize',this.value);this.nextElementSibling.textContent=this.value">
+                                <span class="style-val">${st.fontSize||32}</span></div>
+                            <div class="style-row"><span class="style-label">색상</span>
+                                <div class="color-row">${colorDots(si,li,st.color||'#1A1A1A')}</div></div>
+                            <div class="style-row"><span class="style-label">정렬</span>
+                                <div style="display:flex;gap:4px">
+                                    <button class="line-btn ${(!st.align||st.align==='center')?'active':''}" onclick="setLineStyle(${si},${li},'align','center');renderScenes()">중</button>
+                                    <button class="line-btn ${st.align==='left'?'active':''}" onclick="setLineStyle(${si},${li},'align','left');renderScenes()">좌</button>
+                                    <button class="line-btn ${st.align==='right'?'active':''}" onclick="setLineStyle(${si},${li},'align','right');renderScenes()">우</button>
+                                </div></div>
+                        </div></div>`;
+                    });
+
+                    html+=`<div class="add-line-btn" onclick="addLine(${si})">+ 줄 추가</div>
+                           <div class="add-line-btn" onclick="addImageLine(${si})" style="margin-top:3px">+ 이미지 줄 추가</div>`;
+                }
+                card.innerHTML=html;
+                c.appendChild(card);
+            });
+            document.getElementById('btnGenVideo').style.display='block';
+            updateTotals();
+        }
+
+        function toggleStyle(si,li){
+            const el=document.getElementById(`sp-${si}-${li}`);
+            el.classList.toggle('show');
+        }
+
+        function addLine(si){
+            ensureLinesData(currentScenes[si]);
+            currentScenes[si].lines_data.push({text:'새로운 줄',style:{}});
+            renderScenes();
+        }
+
+        function addImageLine(si){
+            ensureLinesData(currentScenes[si]);
+            const li=currentScenes[si].lines_data.length;
+            currentScenes[si].lines_data.push({text:'',style:{},needsImage:true});
+            renderScenes();
+            // 자동으로 파일 선택 열기
+            setTimeout(()=>{
+                const f=document.getElementById(`lfile-${si}-${li}`);
+                if(f) f.click();
+            },100);
+        }
+
+        function removeLine(si,li){
+            currentScenes[si].lines_data.splice(li,1);
+            renderScenes();
+        }
+
+        async function uploadSceneImage(input,si){
+            const file=input.files[0]; if(!file) return;
+            const fd=new FormData();
+            fd.append('file',file);
+            fd.append('slot',currentScenes[si].image_slot||'thumbnail');
+            fd.append('session_id',sessionId);
+            try{
+                const r=await fetch('/api/upload-image',{method:'POST',body:fd});
+                const d=await r.json();
+                if(d.error){ showToast(d.error,true); return; }
+                currentScenes[si].image_path=d.path;
+                renderScenes();
+                showToast('이미지 업로드 완료');
+            }catch(e){ showToast('업로드 실패',true); }
+        }
+
+        async function uploadLineImage(input,si,li){
+            const file=input.files[0]; if(!file) return;
+            const fd=new FormData();
+            fd.append('file',file);
+            fd.append('slot',`line_${si}_${li}`);
+            fd.append('session_id',sessionId);
+            try{
+                const r=await fetch('/api/upload-image',{method:'POST',body:fd});
+                const d=await r.json();
+                if(d.error){ showToast(d.error,true); return; }
+                currentScenes[si].lines_data[li].image_path=d.path;
+                currentScenes[si].lines_data[li].image_url=d.url;
+                renderScenes();
+                showToast('이미지 업로드 완료');
+            }catch(e){ showToast('업로드 실패',true); }
+        }
+
+        async function generateVideo(){
+            document.getElementById('btnGenVideo').style.display='none';
+            document.getElementById('videoLoading').classList.add('show');
+            document.getElementById('status').textContent='영상 생성 중...';
+            try{
+                const r=await fetch('/api/generate-video',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({scenes:currentScenes,session_id:sessionId})});
+                const d=await r.json();
+                if(d.error){ showToast(d.error,true); document.getElementById('btnGenVideo').style.display='block'; return; }
+                document.getElementById('previewScreen').innerHTML=`<video src="${d.video_url}" controls autoplay loop></video>`;
+                document.getElementById('downloadLink').href=d.video_url;
+                document.getElementById('resultArea').style.display='block';
+                document.getElementById('btnGenVideo').style.display='block';
+                showToast('영상 생성 완료!');
+                document.getElementById('status').textContent='완료';
+            }catch(e){ showToast('생성 실패',true); document.getElementById('btnGenVideo').style.display='block'; }
+            finally{ document.getElementById('videoLoading').classList.remove('show'); }
+        }
+
+        function resetAll(){
+            sessionId=Math.random().toString(36).substr(2,8);
+            currentScenes=[];
+            document.getElementById('topic').value='';
+            document.getElementById('description').value='';
+            document.getElementById('scenesContainer').innerHTML='<div style="text-align:center;color:#555;padding:40px 16px;font-size:12px;">주제를 입력하고 대본을 생성해주세요</div>';
+            document.getElementById('previewScreen').innerHTML='<div class="placeholder">영상 생성 후<br>미리보기 표시</div>';
+            document.getElementById('btnGenVideo').style.display='none';
+            document.getElementById('resultArea').style.display='none';
+            document.getElementById('status').textContent='준비됨';
+            updateTotals();
+        }
+    </script>
+</body>
+</html>
