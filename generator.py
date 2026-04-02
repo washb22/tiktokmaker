@@ -232,8 +232,15 @@ def generate_video(scenes, output_dir=None):
             frame_path = temp_dir / f"frame_{frame_idx:04d}.png"
             image_path = scene.get("image_path", "")
             if image_path and os.path.exists(image_path):
-                thumb = Image.open(image_path)
-                thumb = thumb.resize((WIDTH, HEIGHT), Image.Resampling.LANCZOS)
+                src = Image.open(image_path).convert("RGB")
+                # 검은 배경 + 가로폭 꽉 채우고 원본비율 유지 + 세로 중앙 배치
+                thumb = Image.new("RGB", (WIDTH, HEIGHT), "#000000")
+                scale = WIDTH / src.width
+                new_w = WIDTH
+                new_h = int(src.height * scale)
+                src_resized = src.resize((new_w, new_h), Image.Resampling.LANCZOS)
+                y_pos = (HEIGHT - new_h) // 2
+                thumb.paste(src_resized, (0, y_pos))
                 thumb.save(str(frame_path), quality=95)
             else:
                 # 이미지 없으면 제목 텍스트만 심플하게 표시

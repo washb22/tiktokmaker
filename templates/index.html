@@ -214,14 +214,38 @@
             ctx.fillRect(0, 0, CANVAS_W, CANVAS_H);
 
             if(scene.type === 'thumbnail'){
-                // 썸네일 미리보기
-                ctx.fillStyle = '#1A1A1A';
+                // 썸네일 미리보기 - 검은 배경 + 이미지 가로로 가운데 + 텍스트
+                ctx.fillStyle = '#000000';
                 ctx.fillRect(0, 0, CANVAS_W, CANVAS_H);
-                ctx.fillStyle = '#FFFFFF';
-                ctx.font = 'bold 38px "Malgun Gothic"';
-                ctx.textAlign = 'center';
+
+                const thumbUrl = scene.image_url || null;
+                let imgBottomY = CANVAS_H * 0.45;
+                if(thumbUrl && loadedImages[thumbUrl]){
+                    const img = loadedImages[thumbUrl];
+                    // 가로폭 꽉 채우고 원본비율 유지, 세로 중앙 배치
+                    const scale = CANVAS_W / img.width;
+                    const w = CANVAS_W;
+                    const h = img.height * scale;
+                    const yPos = (CANVAS_H - h) / 2;
+                    ctx.drawImage(img, 0, yPos, w, h);
+                    imgBottomY = yPos + h;
+                }
+
+                // 제목 텍스트 - 이미지 아래
                 const title = scene.title || '제목';
-                wrapText(ctx, title, CANVAS_W/2, CANVAS_H/2 - 20, CANVAS_W - 80, 56);
+                ctx.fillStyle = '#FFFFFF';
+                ctx.font = 'bold 42px "Malgun Gothic"';
+                ctx.textAlign = 'center';
+                ctx.shadowColor = 'rgba(0,0,0,0.8)';
+                ctx.shadowBlur = 4;
+                ctx.shadowOffsetX = 1;
+                ctx.shadowOffsetY = 1;
+                wrapText(ctx, title, CANVAS_W/2, Math.max(imgBottomY + 60, CANVAS_H * 0.75), CANVAS_W - 80, 56);
+                ctx.shadowColor = 'transparent';
+                ctx.shadowBlur = 0;
+                ctx.shadowOffsetX = 0;
+                ctx.shadowOffsetY = 0;
+
                 document.getElementById('previewLabel').textContent = '썸네일';
                 return;
             }
@@ -245,10 +269,17 @@
 
             let y = textStartY;
 
+            // 남은 공간에 맞게 폰트 크기 자동 조절
+            const availableH = CANVAS_H - textStartY - 40;
+            const totalLines = ld.filter(l => l.text && l.text.trim()).length;
+            const lineImgCount = ld.filter((l,i) => i <= showUpTo && l.image_url && loadedImages[l.image_url]).length;
+            const neededH = totalLines * 48 + lineImgCount * (CANVAS_H * 0.22 + 12);
+            const scaleFactor = neededH > availableH ? availableH / neededH : 1;
+
             for(let i = 0; i <= showUpTo; i++){
                 const line = ld[i];
                 const st = line.style || {};
-                const fontSize = st.fontSize || 32;
+                const fontSize = Math.round((st.fontSize || 32) * scaleFactor);
                 const color = st.color || '#1A1A1A';
                 const align = st.align || 'center';
                 const bold = line.text && line.text.includes('**');
@@ -256,7 +287,7 @@
                 // 줄 이미지
                 if(line.image_url && loadedImages[line.image_url]){
                     const img = loadedImages[line.image_url];
-                    const maxH = CANVAS_H * 0.22;
+                    const maxH = CANVAS_H * 0.22 * scaleFactor;
                     const scale = Math.min((CANVAS_W - 100) / img.width, maxH / img.height, 1);
                     const w = img.width * scale, h = img.height * scale;
                     ctx.drawImage(img, (CANVAS_W - w)/2, y, w, h);
@@ -280,7 +311,7 @@
 
                 ctx.textAlign = 'left';
                 ctx.fillText(text, x, y + fontSize);
-                y += fontSize + 16;
+                y += fontSize + Math.round(16 * scaleFactor);
 
                 // 현재 줄 하이라이트
                 if(i === showUpTo && previewLineIdx >= 0){
