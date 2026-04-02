@@ -130,6 +130,10 @@
                 <label>상세 설명</label>
                 <textarea id="description" placeholder="제품 특징, 효과, 타겟..."></textarea>
             </div>
+            <div class="input-group">
+                <label>대본 방향 (선택)</label>
+                <textarea id="direction" placeholder="예: 겨드랑이 까만사람들 이거 꼭 봐, 착색크림으로 해결하는 스토리&#10;비워두면 AI가 랜덤 생성" style="min-height:50px"></textarea>
+            </div>
             <button class="btn btn-primary" id="btnGenScript" onclick="generateScript()">대본 생성</button>
             <div class="loading" id="scriptLoading"><div class="spinner"></div><div style="font-size:12px;color:var(--muted)">대본 생성 중...</div></div>
         </div>
@@ -382,12 +386,13 @@
         async function generateScript(){
             const topic=document.getElementById('topic').value.trim();
             const desc=document.getElementById('description').value.trim();
+            const direction=document.getElementById('direction').value.trim();
             if(!topic){ showToast('주제를 입력해주세요',true); return; }
             document.getElementById('btnGenScript').disabled=true;
             document.getElementById('scriptLoading').classList.add('show');
             document.getElementById('status').textContent='대본 생성 중...';
             try{
-                const res=await fetch('/api/generate-script',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({topic,description:desc})});
+                const res=await fetch('/api/generate-script',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({topic,description:desc,direction})});
                 const data=await res.json();
                 if(data.error){ showToast(data.error,true); return; }
                 currentScenes=data.scenes;
