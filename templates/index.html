@@ -110,6 +110,24 @@
         .toast.show { transform:translateY(0); opacity:1; }
         .toast.error { background:var(--accent); color:white; }
 
+        .mode-tabs { display:flex; gap:0; margin-bottom:14px; border-radius:8px; overflow:hidden; border:1px solid var(--border); }
+        .mode-tab { flex:1; padding:9px; text-align:center; font-size:12px; font-weight:bold; cursor:pointer; background:#222; color:var(--muted); border:none; font-family:inherit; transition:all .2s; }
+        .mode-tab.active { background:var(--accent); color:white; }
+        .mode-tab:first-child { border-right:1px solid var(--border); }
+        .mode-content { display:none; }
+        .mode-content.active { display:block; }
+
+        .add-scene-grid { display:flex; flex-direction:column; gap:8px; }
+        .add-scene-btn { padding:14px 12px; border:2px dashed #444; border-radius:10px; background:#1a1a1a; color:var(--text); cursor:pointer; font-family:inherit; font-size:12px; text-align:left; transition:all .2s; display:flex; align-items:center; gap:10px; }
+        .add-scene-btn:hover { border-color:var(--accent); background:#222; }
+        .add-scene-btn .icon { font-size:20px; width:36px; height:36px; display:flex; align-items:center; justify-content:center; background:#252525; border-radius:8px; flex-shrink:0; }
+        .add-scene-btn .label { font-weight:bold; }
+        .add-scene-btn .desc { font-size:10px; color:var(--muted); margin-top:2px; }
+
+        .scene-actions { display:flex; gap:4px; margin-left:auto; }
+        .scene-action-btn { background:none; border:1px solid #444; color:#888; cursor:pointer; border-radius:4px; width:22px; height:22px; font-size:10px; display:flex; align-items:center; justify-content:center; }
+        .scene-action-btn:hover { border-color:var(--accent); color:var(--accent); }
+
         @media(max-width:1200px) { .container { grid-template-columns:1fr; } .preview-panel { position:static; } .phone-frame { max-height:400px; margin:0 auto; max-width:230px; } }
     </style>
 </head>
@@ -121,21 +139,51 @@
 
     <div class="container">
         <div class="panel">
-            <h2>1. 주제 입력</h2>
-            <div class="input-group">
-                <label>주제 / 제품명</label>
-                <input type="text" id="topic" placeholder="예: 비타민C 세럼...">
+            <div class="mode-tabs">
+                <button class="mode-tab active" onclick="switchMode('auto')">자동 생성</button>
+                <button class="mode-tab" onclick="switchMode('self')">셀프 생성</button>
             </div>
-            <div class="input-group">
-                <label>상세 설명</label>
-                <textarea id="description" placeholder="제품 특징, 효과, 타겟..."></textarea>
+
+            <div class="mode-content active" id="modeAuto">
+                <h2>1. 주제 입력</h2>
+                <div class="input-group">
+                    <label>주제 / 제품명</label>
+                    <input type="text" id="topic" placeholder="예: 비타민C 세럼...">
+                </div>
+                <div class="input-group">
+                    <label>상세 설명</label>
+                    <textarea id="description" placeholder="제품 특징, 효과, 타겟..."></textarea>
+                </div>
+                <div class="input-group">
+                    <label>대본 방향 (선택)</label>
+                    <textarea id="direction" placeholder="예: 겨드랑이 까만사람들 이거 꼭 봐, 착색크림으로 해결하는 스토리&#10;비워두면 AI가 랜덤 생성" style="min-height:50px"></textarea>
+                </div>
+                <button class="btn btn-primary" id="btnGenScript" onclick="generateScript()">대본 생성</button>
+                <div class="loading" id="scriptLoading"><div class="spinner"></div><div style="font-size:12px;color:var(--muted)">대본 생성 중...</div></div>
             </div>
-            <div class="input-group">
-                <label>대본 방향 (선택)</label>
-                <textarea id="direction" placeholder="예: 겨드랑이 까만사람들 이거 꼭 봐, 착색크림으로 해결하는 스토리&#10;비워두면 AI가 랜덤 생성" style="min-height:50px"></textarea>
+
+            <div class="mode-content" id="modeSelf">
+                <h2>1. 장면 추가</h2>
+                <div class="add-scene-grid">
+                    <button class="add-scene-btn" onclick="addSceneSelf('thumbnail')">
+                        <div class="icon">🖼</div>
+                        <div><div class="label">+ 썸네일</div><div class="desc">제목 + 이미지 (첫 장면)</div></div>
+                    </button>
+                    <button class="add-scene-btn" onclick="addSceneSelf('image_text')">
+                        <div class="icon">📷</div>
+                        <div><div class="label">+ 이미지+텍스트 장면</div><div class="desc">배경 이미지 위에 텍스트 누적</div></div>
+                    </button>
+                    <button class="add-scene-btn" onclick="addSceneSelf('text')">
+                        <div class="icon">📝</div>
+                        <div><div class="label">+ 텍스트 장면</div><div class="desc">텍스트만 누적 표시</div></div>
+                    </button>
+                </div>
+                <div style="margin-top:14px;padding:10px;background:#222;border-radius:8px;font-size:11px;color:var(--muted);line-height:1.6">
+                    장면을 추가하고 오른쪽 편집 패널에서<br>
+                    <span style="color:var(--cyan)">줄 추가</span> / <span style="color:var(--cyan)">이미지 추가</span> / <span style="color:var(--cyan)">스타일 편집</span><br>
+                    자유롭게 구성하세요
+                </div>
             </div>
-            <button class="btn btn-primary" id="btnGenScript" onclick="generateScript()">대본 생성</button>
-            <div class="loading" id="scriptLoading"><div class="spinner"></div><div style="font-size:12px;color:var(--muted)">대본 생성 중...</div></div>
         </div>
 
         <div class="panel scenes-panel">
@@ -456,7 +504,12 @@
                 let html='';
 
                 if(scene.type==='thumbnail'){
-                    html=`<div class="scene-header"><span class="scene-badge badge-thumbnail">썸네일</span><span class="scene-name">이미지 업로드</span></div>
+                    html=`<div class="scene-header"><span class="scene-badge badge-thumbnail">썸네일</span><span class="scene-name">이미지 업로드</span>
+                    <div class="scene-actions">
+                        <button class="scene-action-btn" onclick="event.stopPropagation();moveScene(${si},-1)" title="위로">▲</button>
+                        <button class="scene-action-btn" onclick="event.stopPropagation();moveScene(${si},1)" title="아래로">▼</button>
+                        <button class="scene-action-btn" onclick="event.stopPropagation();removeScene(${si})" title="삭제">&times;</button>
+                    </div></div>
                     <div style="margin-bottom:6px"><label style="font-size:10px;color:var(--muted);display:block;margin-bottom:3px">제목</label><input class="thumb-input" value="${esc(scene.title||'')}" onchange="currentScenes[${si}].title=this.value;renderPreview()" oninput="currentScenes[${si}].title=this.value;renderPreview()"></div>
                     <div class="line-image-slot ${scene.image_path?'has-img':''}" id="tslot-${si}" onclick="document.getElementById('tfile-${si}').click()">${scene.image_path?`<img src="/uploads/${sessionId}/thumbnail.${(scene.image_path||'').split('.').pop()}"><button class="rm" onclick="event.stopPropagation();delete currentScenes[${si}].image_path;renderScenes();renderPreview()">&times;</button>`:'+ 썸네일 이미지 업로드'}<input type="file" id="tfile-${si}" accept="image/*" onchange="uploadSceneImage(this,${si})" style="display:none"></div>`;
                 } else {
@@ -465,10 +518,19 @@
                     const lbl=labels[scene.name]||scene.name||'';
                     html=`<div class="scene-header"><span class="scene-badge ${badge}">${lbl}</span>
                     <span class="scene-name">${scene.type==='image_text'?'이미지+텍스트':'텍스트'}</span>
-                    <span class="scene-info">${ld.length}줄 / ${(ld.length*1.1+0.5).toFixed(1)}초</span></div>`;
+                    <span class="scene-info">${ld.length}줄 / ${(ld.length*1.1+0.5).toFixed(1)}초</span>
+                    <div class="scene-actions">
+                        <button class="scene-action-btn" onclick="event.stopPropagation();moveScene(${si},-1)" title="위로">▲</button>
+                        <button class="scene-action-btn" onclick="event.stopPropagation();moveScene(${si},1)" title="아래로">▼</button>
+                        <button class="scene-action-btn" onclick="event.stopPropagation();removeScene(${si})" title="삭제">&times;</button>
+                    </div></div>`;
 
-                    if(scene.image_slot){
+                    if(scene.image_slot || scene.type==='image_text'){
+                        if(!scene.image_slot) scene.image_slot='hooking';
                         const slotLabels={hooking:'훅킹 이미지',product:'제품 이미지',before_after:'비포/애프터',information:'정보 이미지',list_items:'리스트 이미지'};
+                        html+=`<div style="margin-bottom:6px;display:flex;align-items:center;gap:6px"><span style="font-size:10px;color:var(--muted)">이미지 슬롯</span><select class="style-select" style="flex:1" onchange="currentScenes[${si}].image_slot=this.value;renderScenes()">
+                            ${Object.entries(slotLabels).map(([k,v])=>`<option value="${k}" ${scene.image_slot===k?'selected':''}>${v}</option>`).join('')}
+                        </select></div>`;
                         const hasImg=scene.image_path?'has-img':'';
                         const imgContent=scene.image_path?
                             `<img src="/uploads/${sessionId}/${scene.image_slot}.${(scene.image_path||'').split('.').pop()}"><button class="rm" onclick="event.stopPropagation();delete currentScenes[${si}].image_path;delete currentScenes[${si}].image_url;renderScenes();renderPreview()">&times;</button>`:
@@ -522,6 +584,17 @@
                 card.innerHTML=html;
                 c.appendChild(card);
             });
+            // 장면 추가 버튼 (셀프 모드일 때 하단에도 표시)
+            if(currentScenes.length > 0){
+                const addDiv = document.createElement('div');
+                addDiv.style.cssText = 'display:flex;gap:6px;margin-top:8px;';
+                addDiv.innerHTML = `
+                    <div class="add-line-btn" onclick="addSceneSelf('thumbnail')" style="flex:1">+ 썸네일</div>
+                    <div class="add-line-btn" onclick="addSceneSelf('image_text')" style="flex:1">+ 이미지+텍스트</div>
+                    <div class="add-line-btn" onclick="addSceneSelf('text')" style="flex:1">+ 텍스트</div>
+                `;
+                c.appendChild(addDiv);
+            }
             document.getElementById('btnGenVideo').style.display = currentScenes.length > 0 ? 'block' : 'none';
             updateTotals();
         }
@@ -621,6 +694,53 @@
                 document.getElementById('status').textContent='완료';
             }catch(e){ showToast('생성 실패',true); document.getElementById('btnGenVideo').style.display='block'; }
             finally{ document.getElementById('videoLoading').classList.remove('show'); }
+        }
+
+        function switchMode(mode){
+            document.querySelectorAll('.mode-tab').forEach((t,i)=>{ t.classList.toggle('active', (mode==='auto'?i===0:i===1)); });
+            document.getElementById('modeAuto').classList.toggle('active', mode==='auto');
+            document.getElementById('modeSelf').classList.toggle('active', mode==='self');
+            if(mode==='self' && currentScenes.length===0){
+                document.getElementById('scenesContainer').innerHTML='<div style="text-align:center;color:#555;padding:40px 16px;font-size:12px;">왼쪽에서 장면을 추가해주세요</div>';
+            }
+        }
+
+        function addSceneSelf(type){
+            if(type==='thumbnail'){
+                currentScenes.push({type:'thumbnail',title:'제목을 입력하세요',duration:2.5});
+            } else if(type==='image_text'){
+                currentScenes.push({type:'image_text',name:'custom',image_slot:'hooking',lines_data:[{text:'텍스트를 입력하세요',style:{}}]});
+            } else {
+                currentScenes.push({type:'text',name:'custom',lines_data:[{text:'텍스트를 입력하세요',style:{}}]});
+            }
+            activeSceneIdx = currentScenes.length - 1;
+            const scene = currentScenes[activeSceneIdx];
+            previewLineIdx = scene.type !== 'thumbnail' ? (scene.lines_data||[]).length - 1 : -1;
+            renderScenes();
+            renderPreview();
+            document.getElementById('previewNav').style.display = scene.type !== 'thumbnail' ? 'flex' : 'none';
+            showToast('장면 추가됨');
+        }
+
+        function removeScene(si){
+            currentScenes.splice(si,1);
+            if(activeSceneIdx >= currentScenes.length) activeSceneIdx = currentScenes.length - 1;
+            if(activeSceneIdx >= 0){
+                const scene = currentScenes[activeSceneIdx];
+                previewLineIdx = scene.type !== 'thumbnail' ? (scene.lines_data||[]).length - 1 : -1;
+            } else { previewLineIdx = -1; }
+            renderScenes();
+            renderPreview();
+        }
+
+        function moveScene(si, dir){
+            const newIdx = si + dir;
+            if(newIdx < 0 || newIdx >= currentScenes.length) return;
+            [currentScenes[si], currentScenes[newIdx]] = [currentScenes[newIdx], currentScenes[si]];
+            if(activeSceneIdx === si) activeSceneIdx = newIdx;
+            else if(activeSceneIdx === newIdx) activeSceneIdx = si;
+            renderScenes();
+            renderPreview();
         }
 
         function resetAll(){
