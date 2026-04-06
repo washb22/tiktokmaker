@@ -124,48 +124,56 @@
     {
       "step": 5,
       "name": "solution",
-      "description": "솔루션 - 광고 느낌 절대 금지",
+      "description": "솔루션 - 추천 과정을 깊게 (비교경험+선택이유+사용법)",
       "has_image": true,
       "image_type": "product",
       "image_usage_rate": "92%",
       "text_lines": "5~7줄",
       "duration_sec": 7,
       "emotion": "납득 → 기대",
-      "rule": "원인→솔루션 논리적 연결 필수. 10대 구매력 고려"
+      "reference_insight": "레퍼런스 11/15가 비교경험 포함, 12/15가 구체적 사용법 포함",
+      "required_elements": {
+        "comparison": "비교 경험 1~2줄 (다른 제품 왜 안됐는지)",
+        "reason": "선택 이유 1~2줄 (논리적 연결)",
+        "usage": "구체적 사용법 1~2줄 (아침저녁, 하루한알 등)"
+      },
+      "rule": "원인→솔루션 논리적 연결 필수. 10대 구매력 고려. 제품명만 던지면 광고"
     },
     {
       "step": 6,
       "name": "proof",
-      "description": "증거/후기 - 시간순 변화 + 솔직 고백 + 또래 반응",
+      "description": "증거/후기 - 5단계 에스컬레이션 (클라이맥스, 대본 성패 결정)",
       "has_image": true,
       "image_type": "before_after",
-      "text_lines": "5~7줄",
-      "duration_sec": 7,
+      "text_lines": "7~10줄",
+      "duration_sec": 9,
       "emotion": "기대 → 확신 → 사회적 확인",
-      "emotion_position": "영상 75~85% 지점 (감정 최고점)",
-      "required_elements": {
-        "time_sequence": "처음 반신반의 → 1~2주 약간 → 한달 확실히",
-        "honest_confession": "솔직 고백 1~2줄 필수 (양면 제시 - 단점 1개 인정)",
-        "peer_reaction": "또래 반응 필수 (같은반 애가 물어봄, 단톡에서 난리남)"
+      "emotion_position": "영상 70~85% 지점 (감정 최고점)",
+      "reference_insight": "레퍼런스 9/15 시간대별변화, 8/15 비포애프터, 7/15 부작용해소 포함",
+      "escalation_structure": {
+        "step1_timeline": {"lines": "2~3줄", "description": "시간대별 변화 (2~3주 없음→한달 체감→두달 확실히). 구체적 기간+수치 필수"},
+        "step2_before_after": {"lines": "1줄", "description": "구체적 결과/비포애프터 (AA→B~C, 옛날사진 vs 지금사진)"},
+        "step3_honest_confession": {"lines": "1줄", "description": "솔직 고백 (단점 1개 인정)"},
+        "step4_concern_relief": {"lines": "1~2줄", "description": "부작용/우려 해소 (30알 먹어야 부작용, 친구4명 부작용 0)"},
+        "step5_social_proof": {"lines": "1~2줄", "description": "사회적 증거 (반여자 같이먹음, 알만한 언니들 다 먹음)"}
       }
     },
     {
-      "step": 7,
-      "name": "tips",
-      "description": "추가 팁",
-      "has_image": false,
-      "text_lines": "3~4줄",
-      "duration_sec": 4,
-      "emotion": "확신 유지"
-    },
-    {
-      "step": 8,
+      "step": "7+8",
       "name": "closing",
-      "description": "마무리",
+      "description": "팁+마무리 (제품추천으로 끝내지 말고 완전한 가이드 느낌)",
       "has_image": false,
-      "text_lines": "3~4줄",
-      "duration_sec": 4,
-      "emotion": "확신 → 행동",
+      "text_lines": "5~7줄",
+      "duration_sec": 7,
+      "emotion": "확신 유지(85%) → 행동 충동(95%)",
+      "emotion_rule": "감정 하강 금지. 피크에서 유지→상승→행동으로 끝",
+      "reference_insight": "레퍼런스 6/15가 추가 생활팁(선크림,세안법,옷차림)으로 완전한 가이드 느낌 제공",
+      "required_elements": {
+        "lifestyle_tip": "추가 생활팁 1~2줄 (제품 외 무료 관리법 - 선크림, 옷차림, 세안법 등)",
+        "emotional_result": "감정적 결과 1줄 (삶의 변화 - 자신감, 못입던 옷, 거울 보기 즐거움)",
+        "pain_callback_product": "고통 콜백 + 제품 각인 1~2줄 (제품명 2회 이상)",
+        "comment_cta": "댓글 유도 1줄"
+      },
       "cta_rules": {
         "recommended": ["방학 끝나기 전에", "어릴때만", "성장기에", "궁금한 사람?", "댓글로 알려줄게", "프로필에 있음"],
         "forbidden": ["링크", "구매", "할인", "이벤트", "한정", "재고 얼마 없다", "추천드립니다", "소개해드릴게요"]
@@ -181,11 +189,12 @@
   ],
   "emotion_curve": {
     "story": {
-      "summary": "호기심(100%) → 공감(80%) → 불안(60%) → 절박(40%) → 좌절(20%) → 납득(50%) → 기대(75%) → 확신+사회적확인(95%) → 행동",
+      "summary": "호기심(100%) → 공감(80%) → 불안(60%) → 절박(40%) → 좌절(20%) → 납득(50%) → 기대(75%) → 확신+사회적확인(95%) → 확신유지(85%) → 행동충동(95%)",
       "lowest_point": "장면3-B 후반 (영상 40~50%)",
       "turning_point": "장면3-B → 장면4 (영상 50~60%)",
-      "highest_point": "장면6 후반 (영상 75~85%)",
-      "key_principle": "감정의 낙차가 클수록 솔루션의 가치가 올라감"
+      "highest_point": "장면6 후반 (영상 70~85%)",
+      "finale_rule": "장면7+8에서 감정 하강 금지. 확신 유지→행동 충동으로 크레센도 마무리",
+      "key_principle": "감정의 낙차가 클수록 솔루션의 가치가 올라감. 후반부 감정 유지가 전환율을 결정함"
     },
     "list": {
       "summary": "호기심(100%) → 납득(70%) → 기대(85%) → 확신(95%) → 행동",
@@ -263,7 +272,7 @@
     "features": ["반말+존댓말 믹스", "ㅋㅋ,ㅜㅜ 3줄 1번", "같은 어미 3줄 연속 금지", "??/??!! 강조 허용"]
   },
   "line_count_summary": {
-    "story_total": "39~53줄 (50~70초)",
+    "story_total": "41~56줄 (50~75초)",
     "list_total": "19~28줄 (30~40초)",
     "chars_per_line": "13~22자",
     "lines_per_scene_avg": 5.5

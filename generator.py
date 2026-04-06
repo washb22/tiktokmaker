@@ -161,7 +161,7 @@ def render_line_on_image(draw, line_text, y, style=None):
     return font_size + 16  # 줄 높이 반환
 
 
-def create_accumulate_frame(lines_data, current_index, base_image_path=None, output_path=None):
+def create_accumulate_frame(lines_data, current_index, base_image_path=None, output_path=None, scene_meta=None):
     """
     누적 프레임 생성.
     lines_data: [{"text": "...", "style": {...}, "image_path": "..."}, ...]
@@ -175,35 +175,57 @@ def create_accumulate_frame(lines_data, current_index, base_image_path=None, out
     if base_image_path and os.path.exists(base_image_path):
         ref_img = Image.open(base_image_path)
         img_area_height = int(HEIGHT * 0.35)
-        ref_img.thumbnail((WIDTH - 80, img_area_height), Image.Resampling.LANCZOS)
+        base_scale = min((WIDTH - 80) / ref_img.width, img_area_height / ref_img.height, 1.0)
+        user_scale = (scene_meta.get("imageScale", 100) / 100) if scene_meta else 1.0
+        final_scale = base_scale * user_scale
+        new_w = int(ref_img.width * final_scale)
+        new_h = int(ref_img.height * final_scale)
+        ref_img = ref_img.resize((new_w, new_h), Image.Resampling.LANCZOS)
         x = (WIDTH - ref_img.width) // 2
-        y = 30
+        offset_y = scene_meta.get("imageOffsetY", 0) if scene_meta else 0
+        y = 30 + offset_y
         img.paste(ref_img, (x, y))
         text_start_y = y + ref_img.height + 20
 
     y = text_start_y
 
+    # 2-pass 렌더링: 이미지 먼저, 텍스트 나중에 (텍스트가 항상 위)
+
+    # Pass 1: 레이아웃 계산 + 이미지 그리기
+    layouts = []
     for i in range(current_index + 1):
         line = lines_data[i]
         line_text = line.get("text", "")
         style = line.get("style", {})
         line_image = line.get("image_path", "")
 
-        # 줄에 이미지가 있으면 삽입
+        entry = {"y": y, "text": line_text, "style": style}
+
         if line_image and os.path.exists(line_image):
             li = Image.open(line_image)
             max_h = int(HEIGHT * 0.25)
-            li.thumbnail((WIDTH - 100, max_h), Image.Resampling.LANCZOS)
+            base_s = min((WIDTH - 100) / li.width, max_h / li.height, 1.0)
+            line_user_scale = line.get("imageScale", 100) / 100
+            final_s = base_s * line_user_scale
+            new_w = int(li.width * final_s)
+            new_h = int(li.height * final_s)
+            li = li.resize((new_w, new_h), Image.Resampling.LANCZOS)
             lx = (WIDTH - li.width) // 2
-            img.paste(li, (lx, y))
-            y += li.height + 12
-            # 이미지만 있는 줄이면 텍스트 스킵
-            if not line_text.strip():
-                continue
+            line_offset_y = line.get("imageOffsetY", 0)
+            img_draw_y = y + line_offset_y
+            img.paste(li, (lx, img_draw_y))
+            y = img_draw_y + li.height + 12
 
+        entry["text_y"] = y if line_text.strip() else None
         if line_text.strip():
-            line_h = render_line_on_image(draw, line_text, y, style)
-            y += line_h
+            font_size = style.get("fontSize", 32)
+            y += font_size + 16
+        layouts.append(entry)
+
+    # Pass 2: 텍스트 그리기 (이미지 위에 표시)
+    for entry in layouts:
+        if entry["text_y"] is not None and entry["text"].strip():
+            render_line_on_image(draw, entry["text"], entry["text_y"], entry["style"])
 
     if output_path:
         img.save(output_path, quality=95)
@@ -233,14 +255,17 @@ def generate_video(scenes, output_dir=None):
             image_path = scene.get("image_path", "")
             if image_path and os.path.exists(image_path):
                 src = Image.open(image_path).convert("RGB")
-                # 검은 배경 + 가로폭 꽉 채우고 원본비율 유지 + 세로 중앙 배치
+                # 검은 배경 + 스케일/오프셋 적용
                 thumb = Image.new("RGB", (WIDTH, HEIGHT), "#000000")
-                scale = WIDTH / src.width
-                new_w = WIDTH
-                new_h = int(src.height * scale)
+                base_scale = WIDTH / src.width
+                user_scale = scene.get("imageScale", 100) / 100
+                final_scale = base_scale * user_scale
+                new_w = int(src.width * final_scale)
+                new_h = int(src.height * final_scale)
                 src_resized = src.resize((new_w, new_h), Image.Resampling.LANCZOS)
-                y_pos = (HEIGHT - new_h) // 2
-                thumb.paste(src_resized, (0, y_pos))
+                x_pos = (WIDTH - new_w) // 2
+                y_pos = (HEIGHT - new_h) // 2 + scene.get("imageOffsetY", 0)
+                thumb.paste(src_resized, (x_pos, y_pos))
                 thumb.save(str(frame_path), quality=95)
             else:
                 # 이미지 없으면 제목 텍스트만 심플하게 표시
@@ -266,6 +291,7 @@ def generate_video(scenes, output_dir=None):
                     lines_data, li,
                     base_image_path=base_image,
                     output_path=str(frame_path),
+                    scene_meta=scene,
                 )
                 frame_files.append(frame_path)
                 dur = lines_data[li].get("duration", LINE_DURATION)

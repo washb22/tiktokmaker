@@ -73,6 +73,12 @@
         .line-image-slot img { max-width:100%; max-height:60px; border-radius:4px; }
         .line-image-slot .rm { position:absolute; top:2px; right:2px; background:var(--accent); color:white; border:none; border-radius:50%; width:16px; height:16px; cursor:pointer; font-size:10px; }
 
+        .img-editor { background:#151515; border-radius:6px; padding:8px; margin-top:4px; }
+        .img-editor .style-row { display:flex; align-items:center; gap:6px; margin-bottom:4px; }
+        .img-editor .style-label { font-size:10px; color:#666; width:36px; flex-shrink:0; }
+        .img-editor .style-range { flex:1; accent-color:var(--cyan); height:16px; }
+        .img-editor .style-val { font-size:10px; color:var(--muted); min-width:30px; text-align:right; }
+
         .add-line-btn { background:#252525; border:1px dashed #444; border-radius:6px; padding:5px; color:#666; cursor:pointer; font-size:11px; text-align:center; margin-top:4px; font-family:inherit; }
         .add-line-btn:hover { border-color:var(--accent); color:var(--accent); }
 
@@ -274,12 +280,15 @@
                 let imgBottomY = CANVAS_H * 0.45;
                 if(thumbUrl && loadedImages[thumbUrl]){
                     const img = loadedImages[thumbUrl];
-                    // 가로폭 꽉 채우고 원본비율 유지, 세로 중앙 배치
-                    const scale = CANVAS_W / img.width;
-                    const w = CANVAS_W;
-                    const h = img.height * scale;
-                    const yPos = (CANVAS_H - h) / 2;
-                    ctx.drawImage(img, 0, yPos, w, h);
+                    const userScale = (scene.imageScale || 100) / 100;
+                    const offsetY = scene.imageOffsetY || 0;
+                    const baseScale = CANVAS_W / img.width;
+                    const finalScale = baseScale * userScale;
+                    const w = img.width * finalScale;
+                    const h = img.height * finalScale;
+                    const xPos = (CANVAS_W - w) / 2;
+                    const yPos = (CANVAS_H - h) / 2 + offsetY;
+                    ctx.drawImage(img, xPos, yPos, w, h);
                     imgBottomY = yPos + h;
                 }
 
@@ -312,11 +321,15 @@
             const sceneImgUrl = scene.image_url || null;
             if(sceneImgUrl && loadedImages[sceneImgUrl]){
                 const img = loadedImages[sceneImgUrl];
+                const userScale = (scene.imageScale || 100) / 100;
+                const offsetY = scene.imageOffsetY || 0;
                 const maxH = CANVAS_H * 0.35;
-                const scale = Math.min((CANVAS_W - 80) / img.width, maxH / img.height, 1);
-                const w = img.width * scale, h = img.height * scale;
-                ctx.drawImage(img, (CANVAS_W - w)/2, 30, w, h);
-                textStartY = 30 + h + 20;
+                const baseScale = Math.min((CANVAS_W - 80) / img.width, maxH / img.height, 1);
+                const finalScale = baseScale * userScale;
+                const w = img.width * finalScale, h = img.height * finalScale;
+                const yPos = 30 + offsetY;
+                ctx.drawImage(img, (CANVAS_W - w)/2, yPos, w, h);
+                textStartY = yPos + h + 20;
             }
 
             let y = textStartY;
@@ -328,28 +341,53 @@
             const neededH = totalLines * 48 + lineImgCount * (CANVAS_H * 0.22 + 12);
             const scaleFactor = neededH > availableH ? availableH / neededH : 1;
 
+            // === 2-pass 렌더링: 이미지 먼저, 텍스트 나중에 (텍스트가 항상 위) ===
+
+            // Pass 1: 레이아웃 계산 + 이미지 그리기
+            let layoutY = textStartY;
+            let lineLayouts = [];
             for(let i = 0; i <= showUpTo; i++){
                 const line = ld[i];
                 const st = line.style || {};
                 const fontSize = Math.round((st.fontSize || 32) * scaleFactor);
-                const color = st.color || '#1A1A1A';
-                const align = st.align || 'center';
-                const bold = line.text && line.text.includes('**');
 
-                // 줄 이미지
+                let entry = { y: layoutY, fontSize, lineIdx: i, hasText: !!(line.text && line.text.trim()) };
+
+                // 줄 이미지 그리기 (offsetY가 레이아웃에 반영 — 텍스트도 같이 이동)
                 if(line.image_url && loadedImages[line.image_url]){
                     const img = loadedImages[line.image_url];
+                    const lineImgScale = (line.imageScale || 100) / 100;
+                    const lineImgOffsetY = line.imageOffsetY || 0;
                     const maxH = CANVAS_H * 0.22 * scaleFactor;
-                    const scale = Math.min((CANVAS_W - 100) / img.width, maxH / img.height, 1);
-                    const w = img.width * scale, h = img.height * scale;
-                    ctx.drawImage(img, (CANVAS_W - w)/2, y, w, h);
-                    y += h + 12;
-                    if(!line.text || !line.text.trim()) continue;
+                    const baseScale = Math.min((CANVAS_W - 100) / img.width, maxH / img.height, 1);
+                    const finalScale = baseScale * lineImgScale;
+                    const w = img.width * finalScale, h = img.height * finalScale;
+                    const imgDrawY = layoutY + lineImgOffsetY;
+                    ctx.drawImage(img, (CANVAS_W - w)/2, imgDrawY, w, h);
+                    layoutY = imgDrawY + h + 12;
+                    entry.afterImgY = layoutY;
                 }
 
-                if(!line.text || !line.text.trim()) continue;
+                if(line.text && line.text.trim()){
+                    entry.textY = layoutY;
+                    layoutY += fontSize + Math.round(16 * scaleFactor);
+                }
 
-                // 볼드 파싱 및 렌더링
+                lineLayouts.push(entry);
+            }
+
+            // Pass 2: 텍스트 그리기 (이미지 위에 표시)
+            for(let i = 0; i <= showUpTo; i++){
+                const line = ld[i];
+                const layout = lineLayouts[i];
+                if(!line.text || !line.text.trim()) continue;
+                if(layout.textY === undefined) continue;
+
+                const st = line.style || {};
+                const fontSize = layout.fontSize;
+                const color = st.color || '#1A1A1A';
+                const align = st.align || 'center';
+                const bold = line.text.includes('**');
                 const text = line.text.replace(/\*\*/g, '');
                 const fontStr = bold ? `bold ${Math.round(fontSize*1.1)}px "Malgun Gothic"` : `${fontSize}px "Malgun Gothic"`;
                 ctx.font = fontStr;
@@ -362,16 +400,17 @@
                 else x = (CANVAS_W - tw) / 2;
 
                 ctx.textAlign = 'left';
-                ctx.fillText(text, x, y + fontSize);
-                y += fontSize + Math.round(16 * scaleFactor);
+                ctx.fillText(text, x, layout.textY + fontSize);
 
                 // 현재 줄 하이라이트
                 if(i === showUpTo && previewLineIdx >= 0){
                     ctx.strokeStyle = '#fe2c55';
                     ctx.lineWidth = 2;
-                    ctx.strokeRect(x - 4, y - fontSize - 12, tw + 8, fontSize + 8);
+                    ctx.strokeRect(x - 4, layout.textY + fontSize - fontSize - 4, tw + 8, fontSize + 8);
                 }
             }
+
+            y = layoutY;
 
             const labels = {hooking:'훅킹+공감',story_emotion:'스토리(감정)',story_struggle:'스토리(좌절)',information:'원인/정보',solution:'솔루션',proof:'증거/후기',tips:'추가팁',closing:'마무리'};
             const lbl = labels[scene.name] || scene.name || '';
@@ -422,8 +461,8 @@
             renderPreview();
         }
 
-        function preloadImage(url, callback){
-            if(loadedImages[url]){ if(callback) callback(); return; }
+        function preloadImage(url, callback, forceReload=false){
+            if(!forceReload && loadedImages[url]){ if(callback) callback(); return; }
             const img = new Image();
             img.crossOrigin = 'anonymous';
             img.onload = () => { loadedImages[url] = img; if(callback) callback(); };
@@ -511,7 +550,17 @@
                         <button class="scene-action-btn" onclick="event.stopPropagation();removeScene(${si})" title="삭제">&times;</button>
                     </div></div>
                     <div style="margin-bottom:6px"><label style="font-size:10px;color:var(--muted);display:block;margin-bottom:3px">제목</label><input class="thumb-input" value="${esc(scene.title||'')}" onchange="currentScenes[${si}].title=this.value;renderPreview()" oninput="currentScenes[${si}].title=this.value;renderPreview()"></div>
-                    <div class="line-image-slot ${scene.image_path?'has-img':''}" id="tslot-${si}" onclick="document.getElementById('tfile-${si}').click()">${scene.image_path?`<img src="/uploads/${sessionId}/thumbnail.${(scene.image_path||'').split('.').pop()}"><button class="rm" onclick="event.stopPropagation();delete currentScenes[${si}].image_path;renderScenes();renderPreview()">&times;</button>`:'+ 썸네일 이미지 업로드'}<input type="file" id="tfile-${si}" accept="image/*" onchange="uploadSceneImage(this,${si})" style="display:none"></div>`;
+                    <div class="line-image-slot ${scene.image_path?'has-img':''}" id="tslot-${si}" onclick="document.getElementById('tfile-${si}').click()">${scene.image_path?`<img src="/uploads/${sessionId}/thumbnail.${(scene.image_path||'').split('.').pop()}"><button class="rm" onclick="event.stopPropagation();delete currentScenes[${si}].image_path;delete currentScenes[${si}].image_url;renderScenes();renderPreview()">&times;</button>`:'+ 썸네일 이미지 업로드'}<input type="file" id="tfile-${si}" accept="image/*" onchange="uploadSceneImage(this,${si})" style="display:none"></div>`;
+                    if(scene.image_path){
+                        html+=`<div class="img-editor" onclick="event.stopPropagation()">
+                            <div class="style-row"><span class="style-label">크기</span>
+                                <input type="range" class="style-range" min="30" max="200" value="${scene.imageScale||100}" oninput="currentScenes[${si}].imageScale=parseInt(this.value);this.nextElementSibling.textContent=this.value+'%';renderPreview()">
+                                <span class="style-val">${scene.imageScale||100}%</span></div>
+                            <div class="style-row"><span class="style-label">위치Y</span>
+                                <input type="range" class="style-range" min="-300" max="300" value="${scene.imageOffsetY||0}" oninput="currentScenes[${si}].imageOffsetY=parseInt(this.value);this.nextElementSibling.textContent=this.value+'px';renderPreview()">
+                                <span class="style-val">${scene.imageOffsetY||0}px</span></div>
+                        </div>`;
+                    }
                 } else {
                     const ld=scene.lines_data||[];
                     const badge=scene.type==='image_text'?'badge-image-text':'badge-text';
@@ -536,6 +585,16 @@
                             `<img src="/uploads/${sessionId}/${scene.image_slot}.${(scene.image_path||'').split('.').pop()}"><button class="rm" onclick="event.stopPropagation();delete currentScenes[${si}].image_path;delete currentScenes[${si}].image_url;renderScenes();renderPreview()">&times;</button>`:
                             `+ ${slotLabels[scene.image_slot]||'이미지'}`;
                         html+=`<div class="line-image-slot ${hasImg}" onclick="document.getElementById('sfile-${si}').click()">${imgContent}<input type="file" id="sfile-${si}" accept="image/*" onchange="uploadSceneImage(this,${si})" style="display:none"></div>`;
+                        if(scene.image_path){
+                            html+=`<div class="img-editor" onclick="event.stopPropagation()">
+                                <div class="style-row"><span class="style-label">크기</span>
+                                    <input type="range" class="style-range" min="30" max="200" value="${scene.imageScale||100}" oninput="currentScenes[${si}].imageScale=parseInt(this.value);this.nextElementSibling.textContent=this.value+'%';renderPreview()">
+                                    <span class="style-val">${scene.imageScale||100}%</span></div>
+                                <div class="style-row"><span class="style-label">위치Y</span>
+                                    <input type="range" class="style-range" min="-200" max="200" value="${scene.imageOffsetY||0}" oninput="currentScenes[${si}].imageOffsetY=parseInt(this.value);this.nextElementSibling.textContent=this.value+'px';renderPreview()">
+                                    <span class="style-val">${scene.imageOffsetY||0}px</span></div>
+                            </div>`;
+                        }
                     }
 
                     ld.forEach((line,li)=>{
@@ -558,6 +617,14 @@
 
                         if(hasLineImg){
                             html+=`<div class="line-image-slot has-img"><img src="${line.image_url||''}"><button class="rm" onclick="event.stopPropagation();delete currentScenes[${si}].lines_data[${li}].image_path;delete currentScenes[${si}].lines_data[${li}].image_url;renderScenes();renderPreview()">&times;</button></div>`;
+                            html+=`<div class="img-editor" onclick="event.stopPropagation()">
+                                <div class="style-row"><span class="style-label">크기</span>
+                                    <input type="range" class="style-range" min="30" max="200" value="${line.imageScale||100}" oninput="currentScenes[${si}].lines_data[${li}].imageScale=parseInt(this.value);this.nextElementSibling.textContent=this.value+'%';renderPreview()">
+                                    <span class="style-val">${line.imageScale||100}%</span></div>
+                                <div class="style-row"><span class="style-label">위치Y</span>
+                                    <input type="range" class="style-range" min="-200" max="200" value="${line.imageOffsetY||0}" oninput="currentScenes[${si}].lines_data[${li}].imageOffsetY=parseInt(this.value);this.nextElementSibling.textContent=this.value+'px';renderPreview()">
+                                    <span class="style-val">${line.imageOffsetY||0}px</span></div>
+                            </div>`;
                         }
                         html+=`<input type="file" id="lfile-${si}-${li}" accept="image/*" onchange="uploadLineImage(this,${si},${li})" style="display:none">`;
 
@@ -644,9 +711,11 @@
                 const r=await fetch('/api/upload-image',{method:'POST',body:fd});
                 const d=await r.json();
                 if(d.error){ showToast(d.error,true); return; }
+                const oldUrl = currentScenes[si].image_url;
+                if(oldUrl) delete loadedImages[oldUrl];
                 currentScenes[si].image_path=d.path;
                 currentScenes[si].image_url=d.url;
-                preloadImage(d.url, () => { renderScenes(); renderPreview(); });
+                preloadImage(d.url, () => { renderScenes(); renderPreview(); }, true);
                 showToast('이미지 업로드 완료');
             }catch(e){ showToast('업로드 실패',true); }
         }
@@ -661,9 +730,11 @@
                 const r=await fetch('/api/upload-image',{method:'POST',body:fd});
                 const d=await r.json();
                 if(d.error){ showToast(d.error,true); return; }
+                const oldUrl = currentScenes[si].lines_data[li].image_url;
+                if(oldUrl) delete loadedImages[oldUrl];
                 currentScenes[si].lines_data[li].image_path=d.path;
                 currentScenes[si].lines_data[li].image_url=d.url;
-                preloadImage(d.url, () => { renderScenes(); renderPreview(); });
+                preloadImage(d.url, () => { renderScenes(); renderPreview(); }, true);
                 showToast('이미지 업로드 완료');
             }catch(e){ showToast('업로드 실패',true); }
         }
